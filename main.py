@@ -2,9 +2,8 @@ import streamlit as st
 
 # Funktion für die Startseite
 def home():
-    st.title('Startseite')
-    st.write('Willkommen auf der Startseite!')
-
+    st.title('Cardio Check')
+    st.image('images/herz.jpg')
 # Funktion für Seite 1
 def page1():
     st.title('Seite 1')
@@ -20,12 +19,17 @@ def page3():
     st.title('Seite 3')
     st.write('Dies ist die dritte Seite.')
 
+def page4():
+    st.title('Seite 4')
+    st.write('Dies ist die vierte Seite.')
+
 # Dictionary zur Zuordnung der Seiten
 pages = {
     'Startseite': home,
     'Seite 1': page1,
     'Seite 2': page2,
-    'Seite 3': page3
+    'Seite 3': page3,
+    'Seite 4': page4
 }
 
 # Initialisierung der Session State
@@ -34,14 +38,16 @@ if 'page' not in st.session_state:
 
 # Sidebar mit Seiten-Navigation
 st.sidebar.title('Navigation')
-if st.sidebar.button('Startseite'):
+if st.sidebar.button('Cardio Check'):
     selection = 'Startseite'
-elif st.sidebar.button('Seite 1'):
+elif st.sidebar.button('About us'):
     selection = 'Seite 1'
-elif st.sidebar.button('Seite 2'):
+elif st.sidebar.button('Anmeldung'):
     selection = 'Seite 2'
-elif st.sidebar.button('Seite 3'):
+elif st.sidebar.button('Übers Herz'):
     selection = 'Seite 3'
+elif st.sidebar.button('Impressum'):
+    selection = 'Seite 4'
 else:
     selection = 'Startseite'  # Default-Seite
 
