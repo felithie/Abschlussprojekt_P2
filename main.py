@@ -1,5 +1,6 @@
 import streamlit as st
 from about_us import about_us
+from Anmeldung import Anmeldung
 
 # Funktion für die Startseite
 def home():
@@ -12,8 +13,7 @@ def page1():
 
 # Funktion für Seite 2
 def page2():
-    st.title('Anmeldung')
-    st.write('Dies ist die Anmeldeseite.')
+    Anmeldung()
 
 # Funktion für Seite 3
 def page3():
