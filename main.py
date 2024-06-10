@@ -45,9 +45,5 @@ selection = st.sidebar.radio('Navigation', list(pages.keys()))
 # Aktualisiere die Session State basierend auf der Auswahl
 st.session_state.page = selection
 
-# Button zum Zurückgehen
-if st.sidebar.button('Zurück'):
-    st.session_state.page = 'Startseite'
-
 # Aufrufen der entsprechenden Seiten-Funktion
 pages[st.session_state.page]()
