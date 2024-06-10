@@ -1,35 +1,37 @@
 import streamlit as st
+from about_us import about_us
 
 # Funktion für die Startseite
 def home():
     st.title('Cardio Check')
     st.image('images/herz.jpg')
+
 # Funktion für Seite 1
 def page1():
-    st.title('Seite 1')
-    st.write('Dies ist die erste Seite.')
+    about_us()
 
 # Funktion für Seite 2
 def page2():
-    st.title('Seite 2')
-    st.write('Dies ist die zweite Seite.')
+    st.title('Anmeldung')
+    st.write('Dies ist die Anmeldeseite.')
 
 # Funktion für Seite 3
 def page3():
-    st.title('Seite 3')
-    st.write('Dies ist die dritte Seite.')
+    st.title('Über das Herz')
+    st.write('Dies ist die Informationsseite über das Herz.')
 
+# Funktion für Seite 4
 def page4():
-    st.title('Seite 4')
-    st.write('Dies ist die vierte Seite.')
+    st.title('Impressum')
+    st.write('Dies ist die Impressumseite.')
 
 # Dictionary zur Zuordnung der Seiten
 pages = {
     'Startseite': home,
-    'Seite 1': page1,
-    'Seite 2': page2,
-    'Seite 3': page3,
-    'Seite 4': page4
+    'About Us': page1,
+    'Anmeldung': page2,
+    'Über das Herz': page3,
+    'Impressum': page4
 }
 
 # Initialisierung der Session State
@@ -38,23 +40,14 @@ if 'page' not in st.session_state:
 
 # Sidebar mit Seiten-Navigation
 st.sidebar.title('Navigation')
-if st.sidebar.button('Cardio Check'):
-    selection = 'Startseite'
-elif st.sidebar.button('About us'):
-    selection = 'Seite 1'
-elif st.sidebar.button('Anmeldung'):
-    selection = 'Seite 2'
-elif st.sidebar.button('Übers Herz'):
-    selection = 'Seite 3'
-elif st.sidebar.button('Impressum'):
-    selection = 'Seite 4'
-else:
-    selection = 'Startseite'  # Default-Seite
+selection = st.sidebar.radio('Navigation', list(pages.keys()))
+
+# Aktualisiere die Session State basierend auf der Auswahl
+st.session_state.page = selection
 
 # Button zum Zurückgehen
 if st.sidebar.button('Zurück'):
     st.session_state.page = 'Startseite'
-
 
 # Aufrufen der entsprechenden Seiten-Funktion
 pages[st.session_state.page]()
