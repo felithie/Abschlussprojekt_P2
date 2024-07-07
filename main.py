@@ -5,7 +5,8 @@ from heart_articles import heart_article
 from heart_articles import heart_rate_article
 from heart_articles import ekg_article
 from heart_articles import vorhofflimmern_article
-from Anmeldung import Anmeldung
+from anmeldung1 import login, register, personalized_page
+
 
 # Funktion für die Startseite
 
@@ -23,7 +24,22 @@ def page1():
 
 # Funktion für Seite 2
 def page2():
-    Anmeldung()
+    st.title("Streamlit Anmeldungsseite")
+    
+    if 'logged_in' not in st.session_state:
+        st.session_state['logged_in'] = False
+    
+    if st.session_state['logged_in']:
+        personalized_page.personalized_page()
+    else:
+        st.sidebar.title("Navigation")
+        choice = st.sidebar.radio("Wählen Sie eine Option", ["Anmeldung", "Registrierung"])
+        
+        if choice == "Anmeldung":
+            login()
+        elif choice == "Registrierung":
+            register()
+
 
 # Funktion für Seite 3
 def page3():
