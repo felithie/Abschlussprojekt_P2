@@ -75,3 +75,4 @@ st.session_state.page = selection
 
 # Aufrufen der entsprechenden Seiten-Funktion
 pages[st.session_state.page]()
+
