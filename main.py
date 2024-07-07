@@ -5,6 +5,7 @@ from heart_articles import heart_article
 from heart_articles import heart_rate_article
 from heart_articles import ekg_article
 from heart_articles import vorhofflimmern_article
+from heart_articles import herzratenvariabilitaet_article
 from anmeldung1 import login, register, personalized_page
 
 
@@ -63,6 +64,8 @@ def page3():
     with st.expander("Vorhofflimmern", expanded=False):
         vorhofflimmern_article()
 
+    with st.expander("Herzratenvariabilität", expanded=False):
+        herzratenvariabilitaet_article()
 
 # Funktion für Seite 4
 def page4():

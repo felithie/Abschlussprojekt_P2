@@ -154,4 +154,45 @@ def vorhofflimmern_article():
     st.markdown("- American Heart Association. \"Atrial Fibrillation (AF or AFib).\" American Heart Association, 2022. [Link](https://www.heart.org/en/health-topics/atrial-fibrillation)")
     st.markdown("- Mayo Clinic Staff. \"Atrial Fibrillation.\" Mayo Clinic, 2021. [Link](https://www.mayoclinic.org/diseases-conditions/atrial-fibrillation)")
 
+def herzratenvariabilitaet_article():
+    st.title("Herzratenvariabilität (HRV): Ein Maß für die Gesundheit des Herzens")
+
+    st.write("""
+    Die Herzratenvariabilität (HRV) ist ein wichtiger Indikator für die Gesundheit des Herz-Kreislauf-Systems. Sie misst die Variation der Zeitintervalle zwischen aufeinanderfolgenden Herzschlägen. Eine hohe HRV ist oft ein Zeichen für ein gesundes Herz, während eine niedrige HRV auf verschiedene gesundheitliche Probleme hinweisen kann.
+    """)
+
+    st.header("Was ist die Herzratenvariabilität?")
+    st.write("""
+    Die HRV bezieht sich auf die Schwankungen in der Dauer der NN-Intervalle (auch RR-Intervalle genannt), die die Zeit zwischen aufeinanderfolgenden Herzschlägen messen. Diese Schwankungen werden durch das autonome Nervensystem (ANS) reguliert, das aus dem Sympathikus und dem Parasympathikus besteht. Der Sympathikus erhöht die Herzfrequenz, während der Parasympathikus sie senkt.
+    """)
+
+    st.header("Wie wird die HRV gemessen?")
+    st.write("""
+    Die HRV wird in der Regel durch die Analyse von Elektrokardiogramm (EKG)-Signalen gemessen. Dabei werden die R-Zacken im EKG verwendet, um die Zeitintervalle zwischen aufeinanderfolgenden Herzschlägen zu bestimmen. Diese Intervalle werden dann zur Berechnung verschiedener HRV-Metriken verwendet, darunter:
+
+    - **SDNN (Standardabweichung aller NN-Intervalle)**: Ein Maß für die allgemeine HRV.
+    - **RMSSD (Quadratwurzel des mittleren quadratischen Unterschieds aufeinanderfolgender NN-Intervalle)**: Ein Maß für die kurzfristige HRV.
+    - **Poincaré-Diagramme**: Diagramme, die jedes NN-Intervall gegenüber dem vorherigen Intervall plotten, um Muster und Abweichungen zu visualisieren.
+    """)
+
+    st.header("Bedeutung der HRV")
+    st.write("""
+    Eine hohe HRV wird oft mit guter körperlicher Fitness, geringerem Stress und besserer Gesundheit assoziiert. Sie kann auf eine hohe Anpassungsfähigkeit des Herzens an wechselnde Anforderungen hinweisen. Eine niedrige HRV hingegen kann auf chronischen Stress, Übertraining, Herz-Kreislauf-Erkrankungen oder andere gesundheitliche Probleme hinweisen.
+    """)
+
+    st.header("Anwendungen der HRV")
+    st.write("""
+    Die HRV wird in verschiedenen Bereichen angewendet, darunter:
+
+    - **Sport und Fitness**: Athleten verwenden die HRV, um ihre Erholung zu überwachen und Übertraining zu vermeiden.
+    - **Medizin**: Die HRV wird zur Diagnose und Überwachung von Herz-Kreislauf-Erkrankungen, Stress und anderen Gesundheitszuständen eingesetzt.
+    - **Stressmanagement**: HRV-Biofeedback-Techniken helfen Menschen, ihre Stressreaktionen zu regulieren und ihre HRV zu verbessern.
+    """)
+
+    st.header("Quellen")
+    st.markdown("- Shaffer, F., & Ginsberg, J. P. (2017). An Overview of Heart Rate Variability Metrics and Norms. Frontiers in Public Health, 5, 258. doi:10.3389/fpubh.2017.00258. [Link](https://www.frontiersin.org/articles/10.3389/fpubh.2017.00258/full)")
+    st.markdown("- Malik, M., Camm, A. J., Bigger, J. T., Breithardt, G., Cerutti, S., Cohen, R. J., ... & Singer, D. H. (1996). Heart rate variability: Standards of measurement, physiological interpretation, and clinical use. European Heart Journal, 17(3), 354-381. doi:10.1093/oxfordjournals.eurheartj.a014868. [Link](https://academic.oup.com/eurheartj/article/17/3/354/556897)")
+    st.markdown("- Task Force of the European Society of Cardiology and the North American Society of Pacing and Electrophysiology. (1996). Heart rate variability: Standards of measurement, physiological interpretation and clinical use. Circulation, 93(5), 1043-1065. doi:10.1161/01.CIR.93.5.1043. [Link](https://www.ahajournals.org/doi/10.1161/01.CIR.93.5.1043)")
+
+
 
