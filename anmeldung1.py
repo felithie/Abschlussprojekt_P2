@@ -12,7 +12,7 @@ def login():
             st.session_state['logged_in'] = True
             st.session_state['username'] = username
             st.success("Erfolgreich angemeldet!")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Ungültiger Benutzername oder Passwort")
 
@@ -26,7 +26,7 @@ def register():
             users[username] = {'password': password}
             save_user_data(users)
             st.success("Erfolgreich registriert!")
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.error("Benutzername bereits vergeben")
 
