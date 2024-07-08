@@ -1,29 +1,25 @@
-from user_data import load_user_data, save_user_data
-from calculatemaxHR import calculate_hr 
 import streamlit as st
-
-
+from database import get_user_data
+from calculatemaxHR import calculate_hr
+from settings_page import user_profile_page
 # Streamlit-Seitenfunktion zur Berechnung der Herzfrequenz
 def calculate_hrpage():
     # Laden der Benutzerdaten
-    users = load_user_data()
-    # Benutzerdaten für den aktuellen Benutzer abrufen
-    user_info = users.get(st.session_state['username'], {})
-    # Alter des Benutzers abrufen
-    age = user_info.get('age')
+    #user_data = get_user_data(st.session_state['username'])
+    age = user_profile_page()
 
-    # Falls kein Alter gespeichert ist, Eingabefeld anzeigen
+    # Alter aus den gespeicherten Benutzerdaten verwenden
     if age is None:
-        age = st.number_input("Alter", min_value=1, max_value=120)
-        # Benutzerdaten aktualisieren
-        user_info['age'] = age
-        users[st.session_state['username']] = user_info
-        save_user_data(users)
-        
+      st.error("Bitte aktualisieren Sie Ihr Alter in den Profileinstellungen.")
     else:
         st.write(f"Ihr Alter: {age}")
         max_hr = calculate_hr(age)
-        st.write(f"Ihre maximale Herzfrequenz: {max_hr}")
+        st.write(f"Ihre maximale Herzfrequenz: {max_hr}")   
+
+    #    st.write(f"Ihr Alter: {age}")
+    #    max_hr = calculate_hr(age)
+    #    st.write(f"Ihre maximale Herzfrequenz: {max_hr}")
     
     if st.button("Zurück zur Hauptseite"):
         st.session_state['page'] = 'main_page'
+        st.experimental_rerun()

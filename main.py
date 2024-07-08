@@ -1,15 +1,18 @@
+#main.py
 import streamlit as st
 from about_us import about_us
+from database import init_db
 from impressum import impressum
 from heart_articles import heart_article
 from heart_articles import heart_rate_article
 from heart_articles import ekg_article
 from heart_articles import vorhofflimmern_article
 from heart_articles import herzratenvariabilitaet_article
-from anmeldung1 import login, register, personalized_page
-
+from anmeldung1 import login, register
+from personalized_page import personalized_page
 
 # Funktion für die Startseite
+init_db()
 
 def home():
     st.title('Cardio Check')
@@ -31,7 +34,7 @@ def page2():
         st.session_state['logged_in'] = False
     
     if st.session_state['logged_in']:
-        personalized_page.personalized_page()
+        personalized_page()
     else:
         st.sidebar.title("Navigation")
         choice = st.sidebar.radio("Wählen Sie eine Option", ["Anmeldung", "Registrierung"])
