@@ -22,8 +22,28 @@ def init_db():
             height REAL
         )
     ''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS user_files (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            file_path TEXT,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
     conn.commit()
     conn.close()
+
+def get_user_id(username):
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute('''
+        SELECT id FROM users WHERE username = ?
+    ''', (username,))
+    user_id = c.fetchone()
+    conn.close()
+    if user_id:
+        return user_id[0]
+    return None
 
 def register_user(username, password, email, name):
     try:
@@ -104,3 +124,26 @@ def get_user_height(username):
         return height[0]
     return None
 
+def add_user_file(user_id, file_path):
+    try:
+        conn = create_connection()
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO user_files (user_id, file_path)
+            VALUES (?, ?)
+        ''', (user_id, file_path))
+        conn.commit()
+    except Exception as e:
+        print(f"Fehler beim Hinzufügen der Datei: {e}")
+    finally:
+        conn.close()
+
+def get_user_files(user_id):
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute('''
+        SELECT file_path FROM user_files WHERE user_id = ?
+    ''', (user_id,))
+    files = c.fetchall()
+    conn.close()
+    return [file[0] for file in files]
