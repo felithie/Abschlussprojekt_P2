@@ -1,10 +1,14 @@
+#database.py
 import streamlit as st
 import pandas as pd
 import sqlite3
 
-# Database functions
-def init_db():
+def create_connection():
     conn = sqlite3.connect('data.db')
+    return conn
+
+def init_db():
+    conn = create_connection()
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -23,7 +27,7 @@ def init_db():
 
 def register_user(username, password, email, name):
     try:
-        conn = sqlite3.connect('data.db')
+        conn = create_connection()
         c = conn.cursor()
         c.execute('''
             INSERT INTO users (username, password, email, name)
@@ -36,7 +40,7 @@ def register_user(username, password, email, name):
         conn.close()
 
 def get_user(username):
-    conn = sqlite3.connect('data.db')
+    conn = create_connection()
     c = conn.cursor()
     c.execute('''
         SELECT * FROM users WHERE username = ?
@@ -45,15 +49,15 @@ def get_user(username):
     conn.close()
     return user
 
-def update_user(username, age, weight, height, password):
+def update_user(username, age, weight, height):
     try:
-        conn = sqlite3.connect('data.db')
+        conn = create_connection()
         c = conn.cursor()
         c.execute('''
             UPDATE users
-            SET age = ?, weight = ?, height = ?, password = ?
+            SET age = ?, weight = ?, height = ?
             WHERE username = ?
-        ''', (age, weight, height, password, username))
+        ''', (age, weight, height, username))
         conn.commit()
     except Exception as e:
         print(f"Fehler beim Aktualisieren des Benutzers: {e}")
@@ -61,11 +65,21 @@ def update_user(username, age, weight, height, password):
         conn.close()
 
 def get_user_data(username):
-    conn = sqlite3.connect('data.db')
+    conn = create_connection()
     c = conn.cursor()
     c.execute('''
-        SELECT age, weight, height, password FROM users WHERE username = ?
+        SELECT age, weight, height FROM users WHERE username = ?
     ''', (username,))
     user_data = c.fetchone()
     conn.close()
     return user_data
+
+def get_user_age(username):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT age FROM users WHERE username=?", (username,))
+    age = cursor.fetchone()
+    conn.close()
+    if age:
+        return age[0]
+    return None

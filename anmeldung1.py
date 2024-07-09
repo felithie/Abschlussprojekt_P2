@@ -1,5 +1,7 @@
 import streamlit as st
-from database import register_user, get_user
+from database import register_user, get_user, get_user_data
+from calculatemaxHR import calculate_hr
+from settings_page import user_profile_page
 
 def login():
     st.subheader("Anmeldung")
@@ -13,7 +15,7 @@ def login():
             st.session_state['logged_in'] = True
             st.session_state['username'] = username
             st.success("Erfolgreich angemeldet!")
-            st.rerun()
+            st.experimental_rerun()
         else:
             st.error("Ungültiger Benutzername oder Passwort")
 
@@ -27,7 +29,7 @@ def register():
         try:
             register_user(username, password, email, name)
             st.success("Erfolgreich registriert!")
-            st.rerun()
+            st.experimental_rerun()
         except ValueError as e:
             st.error(f"Fehler bei der Registrierung: {e}")
         except Exception as e:
