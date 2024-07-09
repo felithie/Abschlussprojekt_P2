@@ -2,12 +2,12 @@
 import streamlit as st
 from calculatemaxHRpage import calculate_hrpage
 from settings_page import user_profile_page
-
+from CalculateBMI import calculateBMI_page
 def personalized_page():
     st.subheader(f"Willkommen, {st.session_state['username']}!")
     st.write("Wählen Sie eine Option:")
 
-    tabs = st.tabs(["Herzfrequenz berechnen", "Abmelden", "Profileinstellungen"])
+    tabs = st.tabs(["Herzfrequenz berechnen", "Abmelden", "Profileinstellungen", "BMI berechnen"])
 
     with tabs[0]:
         if st.button("Maximale Herzfrequenz berechnen"):
@@ -23,4 +23,7 @@ def personalized_page():
     with tabs[2]:
         user_profile_page()
 
+    with tabs[3]:
+        calculateBMI_page()
 
+        

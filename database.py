@@ -83,3 +83,24 @@ def get_user_age(username):
     if age:
         return age[0]
     return None
+
+def get_user_weight(username):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT weight FROM users WHERE username=?", (username,))
+    weight = cursor.fetchone()
+    conn.close()
+    if weight:
+        return weight[0]
+    return None
+
+def get_user_height(username):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT height FROM users WHERE username=?", (username,))
+    height = cursor.fetchone()
+    conn.close()
+    if height:
+        return height[0]
+    return None
+
