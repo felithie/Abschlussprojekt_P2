@@ -1,7 +1,10 @@
+import os
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import streamlit as st
+
+UPLOADS_DIR = "uploads"
 
 def read_activity_csv(file):
     try:
@@ -17,6 +20,20 @@ def read_activity_csv(file):
     except Exception as e:
         st.error(f"Error reading the file: {e}")
         return None
+
+def save_uploaded_file(uploaded_file, username):
+    if not os.path.exists(UPLOADS_DIR):
+        os.makedirs(UPLOADS_DIR)
+    
+    user_dir = os.path.join(UPLOADS_DIR, username)
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir)
+    
+    file_path = os.path.join(user_dir, uploaded_file.name)
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    
+    return file_path
 
 def make_power_plot(df):
     fig = px.line(df, x="time", y="PowerOriginal")
@@ -47,7 +64,13 @@ def display_power_curve():
     uploaded_file = st.file_uploader("Upload your EKG data file", type=["csv", "txt"])
 
     if uploaded_file is not None:
-        df = read_activity_csv(uploaded_file)
+        username = st.session_state.get('username', 'guest')
+        file_path = save_uploaded_file(uploaded_file, username)
+        st.session_state['uploaded_file_path'] = file_path
+
+    file_path = st.session_state.get('uploaded_file_path')
+    if file_path:
+        df = read_activity_csv(file_path)
         
         if df is not None:
             st.write("Data Preview:")
