@@ -58,10 +58,25 @@ def make_powerline_plot(df_pc):
     fig.update_layout(title="Power Curve")
     return fig
 
-def display_power_curve():
-    st.title("EKG Power Curve Visualization")
+def analyze_power_curve(df_pc):
+    max_power_value = df_pc['Power Values in W'].max()
+    min_power_value = df_pc['Power Values in W'].min()
+    mean_power_value = df_pc['Power Values in W'].mean()
+    std_power_value = df_pc['Power Values in W'].std()
 
-    uploaded_file = st.file_uploader("Upload your EKG data file", type=["csv", "txt"])
+    analysis = {
+        "Maximale Leistung (W)": max_power_value,
+        "Minimale Leistung (W)": min_power_value,
+        "Durchschnittliche Leistung (W)": mean_power_value,
+        "Standardabweichung der Leistung (W)": std_power_value,
+    }
+
+    return analysis
+
+def display_power_curve():
+    st.title("Leistungskurve Visualisierung")
+
+    uploaded_file = st.file_uploader("Upload your csv data file", type=["csv"])
 
     if uploaded_file is not None:
         username = st.session_state.get('username', 'guest')
@@ -73,9 +88,7 @@ def display_power_curve():
         df = read_activity_csv(file_path)
         
         if df is not None:
-            st.write("Data Preview:")
-            st.write(df.head())
-            
+           
             # Adding a time column if it doesn't exist
             if 'time' not in df.columns:
                 df["time"] = np.arange(0, len(df))
@@ -83,3 +96,9 @@ def display_power_curve():
             df_pc = maxPowerValues(df)
             fig = make_powerline_plot(df_pc)
             st.plotly_chart(fig)
+            
+            # Power Curve Analysis
+            analysis = analyze_power_curve(df_pc)
+            st.write("**Analyse:**")
+            for key, value in analysis.items():
+                st.write(f"{key}: {value:.2f}")
