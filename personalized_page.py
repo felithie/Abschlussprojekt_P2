@@ -4,12 +4,13 @@ from calculatemaxHRpage import calculate_hrpage
 from settings_page import user_profile_page
 from CalculateBMI import calculateBMI_page
 from HRV import display_hrv_analysis
+from HR import display_hr_analysis
 
 def personalized_page():
     st.subheader(f"Willkommen, {st.session_state['username']}!")
     st.write("Wählen Sie eine Option:")
 
-    tabs = st.tabs(["Herzfrequenz berechnen", "Abmelden", "Profileinstellungen", "BMI berechnen", "HRV Analyse"])
+    tabs = st.tabs(["Herzfrequenz berechnen", "Abmelden", "Profileinstellungen", "BMI berechnen", "HRV Analyse", "HR Analyse"])
 
     with tabs[0]:
         if st.button("Maximale Herzfrequenz berechnen"):
@@ -31,5 +32,6 @@ def personalized_page():
     with tabs[4]:
         display_hrv_analysis()
         
+    with tabs[5]:
+        display_hr_analysis()
 
-        
