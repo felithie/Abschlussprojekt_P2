@@ -41,22 +41,22 @@ def make_powerline_plot(df_pc):
     fig.update_layout(title="Power Curve")
     return fig
 
-# Streamlit interface
-st.title("EKG Power Curve Visualization")
+def display_power_curve():
+    st.title("EKG Power Curve Visualization")
 
-uploaded_file = st.file_uploader("Upload your EKG data file", type=["csv", "txt"])
+    uploaded_file = st.file_uploader("Upload your EKG data file", type=["csv", "txt"])
 
-if uploaded_file is not None:
-    df = read_activity_csv(uploaded_file)
-    
-    if df is not None:
-        st.write("Data Preview:")
-        st.write(df.head())
+    if uploaded_file is not None:
+        df = read_activity_csv(uploaded_file)
         
-        # Adding a time column if it doesn't exist
-        if 'time' not in df.columns:
-            df["time"] = np.arange(0, len(df))
+        if df is not None:
+            st.write("Data Preview:")
+            st.write(df.head())
+            
+            # Adding a time column if it doesn't exist
+            if 'time' not in df.columns:
+                df["time"] = np.arange(0, len(df))
 
-        df_pc = maxPowerValues(df)
-        fig = make_powerline_plot(df_pc)
-        st.plotly_chart(fig)
+            df_pc = maxPowerValues(df)
+            fig = make_powerline_plot(df_pc)
+            st.plotly_chart(fig)

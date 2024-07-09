@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -141,3 +142,6 @@ def display_hrv_analysis():
         st.plotly_chart(poincare_fig)
         st.plotly_chart(histogram_fig)
         st.write(interpretation)
+
+if __name__ == "__main__":
+    display_hrv_analysis()
