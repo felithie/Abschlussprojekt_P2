@@ -48,9 +48,12 @@ class EKGdataHRV:
         current_year = datetime.now().year
         age = self.person_info.get('age', 0)
         gender = self.person_info.get('gender', 'unbekannt')
-        firstname = self.person_info.get('name', 'Unbekannt')
+        firstname = self.person_info.get('firstname', 'Unbekannt')
+        lastname = self.person_info.get('lastname', '')
 
-        interpretation = f"Diese HRV-Daten beziehen sich auf {firstname}, "
+        full_name = f"{firstname} {lastname}".strip()
+
+        interpretation = f"Diese HRV-Daten beziehen sich auf {full_name}, "
         interpretation += f"der/die {age} Jahre alt ist. "
         interpretation += f"Das Geschlecht der Person ist {gender}. "
 
@@ -124,6 +127,7 @@ def display_hrv_analysis():
                 'name': get_user_id(username),
                 'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
                 'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
+
             }
 
             if st.button("Analyse starten"):
