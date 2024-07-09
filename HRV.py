@@ -1,60 +1,48 @@
-import json
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
-import streamlit as st
 import scipy.signal as signal
 from datetime import datetime
+import streamlit as st
+from database import get_user_id, get_user_files, get_user_data
 
 class EKGdataHRV:
 
-    def __init__(self, ekg_dict, person_info):
-        self.id = ekg_dict["id"]
-        self.date = ekg_dict["date"]
-        self.data = ekg_dict["result_link"]
-        # Bestimmen des Typs (Ruhe oder Belastung) basierend auf dem Dateinamen
-        self.type = "Ruhe" if "Ruhe" in self.data else "Belastung" if "Belastung" in self.data else "Unbekannt"
-        self.df = pd.read_csv(self.data, sep='\t', header=None, names=['EKG in mV', 'Time in ms'])
-        self.df["Time in s"] = self.df["Time in ms"] / 1000  # Convert milliseconds to seconds
-        self.ecg_signal = self.df['EKG in mV'].values
-        self.time = self.df['Time in s'].values
+    def __init__(self, file_path, person_info):
+        self.file_path = file_path
+        self.type = "Ruhe" if "Ruhe" in self.file_path else "Belastung" if "Belastung" in self.file_path else "Unbekannt"
+        self.df = pd.read_csv(self.file_path)
+        self.df.columns = ['Time (s)', 'ECG Signal (mV)']  # Rename columns for consistency
+        self.ecg_signal = self.df['ECG Signal (mV)'].values
+        self.time = self.df['Time (s)'].values
         self.person_info = person_info
-
-    @staticmethod
-    def load_by_id(ekg_id):
-        with open("data/person_db.json") as file:
-            person_data = json.load(file)
-        for person in person_data:
-            ekg_tests = person['ekg_tests']
-            for ekg in ekg_tests:
-                if ekg["id"] == ekg_id:
-                    return ekg, person
-        return None, None
+        self.r_peaks = self.find_r_peaks()  # Ensure r_peaks is always initialized
 
     @staticmethod
     def find_peaks(series, threshold, distance):
-        peaks, _ = signal.find_peaks(series, height=threshold, distance=distance)
-        return peaks
+        if len(series) == 0:
+            return np.array([]), {}
+        peaks, properties = signal.find_peaks(series, height=threshold, distance=distance)
+        return peaks, properties
 
     def find_r_peaks(self):
-        r_peaks = EKGdataHRV.find_peaks(self.ecg_signal, 340, 5)
-        self.r_peaks = r_peaks
+        r_peaks, _ = EKGdataHRV.find_peaks(self.ecg_signal, 340, 5)
         return r_peaks
 
     def find_nn_intervals(self):
-        time = self.df['Time in s'].values
-        nn_intervals = np.diff(time[self.find_r_peaks()])
-        # Sicherstellen, dass nur plausible NN-Intervalle verwendet werden (z.B. zwischen 0.3s und 2s)
+        if len(self.time) == 0 or len(self.r_peaks) == 0:
+            return np.array([])
+        time = self.df['Time (s)'].values
+        nn_intervals = np.diff(time[self.r_peaks])
         nn_intervals = nn_intervals[(nn_intervals > 0.3) & (nn_intervals < 2)]
         return nn_intervals
 
     @staticmethod
     def calculate_hrv(nn_intervals):
-        if len(nn_intervals) > 0:
-            sdnn = np.std(nn_intervals, ddof=1)
-            return sdnn
-        else:
+        if len(nn_intervals) == 0:
             return 0
+        sdnn = np.std(nn_intervals, ddof=1)
+        return sdnn
 
     def plot_poincare(self, nn_intervals):
         if len(nn_intervals) > 1:
@@ -69,7 +57,7 @@ class EKGdataHRV:
     def plot_histogram(self, nn_intervals):
         if len(nn_intervals) > 0:
             fig = go.Figure()
-            fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=50))
+            fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=min(50, len(nn_intervals))))
             fig.update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit')
             return fig
         else:
@@ -77,14 +65,12 @@ class EKGdataHRV:
 
     def interpret_data(self):
         current_year = datetime.now().year
-        birth_year = self.person_info.get('date_of_birth', 1980)
-        age = current_year - birth_year
+        age = self.person_info.get('age', 0)
         gender = self.person_info.get('gender', 'unbekannt')
-        firstname = self.person_info.get('firstname', 'Unbekannt')
-        lastname = self.person_info.get('lastname', 'Unbekannt')
+        firstname = self.person_info.get('name', 'Unbekannt')
 
-        interpretation = f"Diese HRV-Daten beziehen sich auf {firstname} {lastname}, "
-        interpretation += f"der/die im Jahr {birth_year} geboren wurde und somit {age} Jahre alt ist. "
+        interpretation = f"Diese HRV-Daten beziehen sich auf {firstname}, "
+        interpretation += f"der/die {age} Jahre alt ist. "
         interpretation += f"Das Geschlecht der Person ist {gender}. "
 
         if self.type == "Belastung":
@@ -116,51 +102,42 @@ class EKGdataHRV:
 
         return interpretation
 
-if __name__ == "__main__":
-    file = open("data/person_db.json")
-    person_data = json.load(file)
-    ekg_dict, person_info = EKGdataHRV.load_by_id(4)
-    if ekg_dict and person_info:
-        ekg_data = EKGdataHRV(ekg_dict, person_info)
+def display_hrv_analysis():
+    username = st.session_state.get('username')
+    if not username:
+        st.error("Bitte melden Sie sich an.")
+        return
+
+    user_id = get_user_id(username)
+    if not user_id:
+        st.error("Benutzer nicht gefunden.")
+        return
+
+    files = get_user_files(user_id)
+    if not files:
+        st.error("Keine EKG-Daten gefunden.")
+        return
+
+    selected_file = st.selectbox("Wählen Sie eine Datei zur Analyse", files)
+    if selected_file:
+        person_info = get_user_data(username)
+        if person_info:
+            person_info = {
+                'age': person_info[0],
+                'weight': person_info[1],
+                'height': person_info[2],
+                'name': username  # Using username as the name since the actual name field is not retrieved
+            }
+        ekg_data = EKGdataHRV(selected_file, person_info)
         nn_intervals = ekg_data.find_nn_intervals()
         hrv = EKGdataHRV.calculate_hrv(nn_intervals)
 
-        print(f"Herzfrequenzvariabilität (SDNN) in Sekunden: {hrv:.4f} s")
+        st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** `{hrv:.4f} s`")
 
         poincare_fig = ekg_data.plot_poincare(nn_intervals)
         histogram_fig = ekg_data.plot_histogram(nn_intervals)
         interpretation = ekg_data.interpret_data()
 
-        st.title("HRV-Analyse")
-        st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** `{hrv:.4f} s`")
-
-        st.write("""
-        ### Poincaré-Diagramm der NN-Intervalle
-        Das Poincaré-Diagramm visualisiert die Beziehung zwischen aufeinanderfolgenden NN-Intervallen (NN_i und NN_{i+1}).
-        Jeder Punkt im Diagramm repräsentiert ein Paar von aufeinanderfolgenden NN-Intervallen.
-        
-        - **Punkte (NN-Intervalle)**: Jeder Punkt stellt ein Paar aufeinanderfolgender NN-Intervalle dar.
-        - **Identitätslinie (rote gestrichelte Linie)**: Punkte entlang dieser Linie zeigen, dass aufeinanderfolgende NN-Intervalle sehr ähnlich sind.
-        - **Verteilung der Punkte**: Eine enge Verteilung nahe der Identitätslinie deutet auf eine geringe Variabilität hin, während eine breite Verteilung eine höhere Variabilität anzeigt.
-        
-        Das Diagramm kann verwendet werden, um Muster und Variabilität in den Herzschlagintervallen zu erkennen und potenzielle Herzrhythmusstörungen zu identifizieren.
-        """)
         st.plotly_chart(poincare_fig)
-
-        st.write("""
-        ### Histogramm der NN-Intervalle
-        Das Histogramm zeigt die Verteilung der NN-Intervalle.
-        
-        - **NN-Intervalle**: Zeitabstände zwischen aufeinanderfolgenden Herzschlägen.
-        - **Häufigkeit**: Anzahl der Vorkommen jedes NN-Intervalls in den Daten.
-        
-        Das Histogramm hilft, die allgemeine Verteilung und Häufigkeit der NN-Intervalle zu visualisieren. Ein Peak in der Verteilung zeigt den häufigsten NN-Intervallbereich an. Ausreißer können auf ungewöhnliche Herzschlagmuster hinweisen, die möglicherweise weiter untersucht werden müssen.
-        """)
         st.plotly_chart(histogram_fig)
-
-        st.write("""
-        ### Interpretation der HRV-Daten
-        """)
         st.write(interpretation)
-    else:
-        st.error("Keine EKG-Daten gefunden.")
