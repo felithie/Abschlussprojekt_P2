@@ -1,7 +1,7 @@
 import streamlit as st
-from database import  get_user_weight, get_user_height
+from database import get_user_weight, get_user_height
 
-def calulate_bmi(weight, height):
+def calculate_bmi(weight, height):
     return weight / (height ** 2)
 
 def display_bmi_info(bmi):
@@ -24,18 +24,19 @@ def display_bmi_info(bmi):
         st.write(f"Ihr BMI: {bmi:.2f} - Adipositas Grad III")
         st.write("Personen mit einem BMI von 40,0 oder höher gelten als sehr schwer fettleibig (Adipositas Grad III). Das Risiko für schwerwiegende gesundheitliche Probleme ist in dieser Kategorie sehr hoch. Eine sofortige und intensive Behandlung ist erforderlich. Dies kann medizinische Eingriffe wie eine bariatrische Operation umfassen, zusätzlich zu Ernährungsberatung und regelmäßiger Bewegung. Eine enge Überwachung durch medizinische Fachkräfte ist notwendig.")
 
-
-def calculateBMI_page():
+def calculate_bmi_page():
     st.subheader("BMI berechnen")
     weight = get_user_weight(st.session_state['username'])
     height = get_user_height(st.session_state['username'])
-    height_in_meters = height / 100
+    
     if weight is None or height is None:
         st.error("Bitte aktualisieren Sie Ihr Gewicht und Ihre Größe in den Profileinstellungen.")
     else:
+        height_in_meters = height / 100
         st.write(f"Ihr Gewicht: {weight} kg")
-        st.write(f"Ihre Größe: {height_in_meters} m")
-        bmi = calulate_bmi(weight, height_in_meters)
-        #st.write(f"Ihr BMI: {bmi:.2f}")
+        st.write(f"Ihre Größe: {height_in_meters:.2f} m")
+        bmi = calculate_bmi(weight, height_in_meters)
         display_bmi_info(bmi)
 
+if __name__ == "__main__":
+    calculate_bmi_page()

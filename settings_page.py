@@ -11,9 +11,9 @@ def user_profile_page():
     else:
         age, weight, height = None, None, None
 
-    age = int(age) if age is not None else 0
-    weight = float(weight) if weight is not None else 0.0
-    height = float(height) if height is not None else 0.0
+    age = int(age) if age is not None else 1
+    weight = float(weight) if weight is not None else 1.0
+    height = float(height) if height is not None else 30.0
 
     if age == 0 or weight == 0.0 or height == 0.0:
         st.error("Bitte aktualisieren Sie Ihr Profil und geben Sie gültige Werte für Alter, Gewicht und Größe an.")

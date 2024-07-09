@@ -2,7 +2,7 @@
 import streamlit as st
 from calculatemaxHRpage import calculate_hrpage
 from settings_page import user_profile_page
-from CalculateBMI import calculateBMI_page
+from CalculateBMI import calculate_bmi_page
 from HRV import display_hrv_analysis
 from HR import display_hr_analysis
 
@@ -27,7 +27,7 @@ def personalized_page():
         user_profile_page()
 
     with tabs[3]:
-        calculateBMI_page()
+        calculate_bmi_page()
     
     with tabs[4]:
         display_hrv_analysis()
