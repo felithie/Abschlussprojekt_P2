@@ -36,6 +36,6 @@ def calculateBMI_page():
         st.write(f"Ihr Gewicht: {weight} kg")
         st.write(f"Ihre Größe: {height_in_meters} m")
         bmi = calulate_bmi(weight, height_in_meters)
-        st.write(f"Ihr BMI: {bmi:.2f}")
+        #st.write(f"Ihr BMI: {bmi:.2f}")
         display_bmi_info(bmi)
 
