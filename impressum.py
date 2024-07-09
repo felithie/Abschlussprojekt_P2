@@ -22,7 +22,7 @@ def impressum():
       - E-Mail: ts7312@mci4me.at
     
     - **Rania Shehata**
-      - E-Mail: rania.shehata@example.com
+      - E-Mail: sr0548@mci4me.at
 
     ### Haftungsausschluss
 

@@ -67,12 +67,57 @@ class EKGdata:
         fig.update_layout(title='Herzfrequenz über die Zeit', xaxis_title='Zeit in s', yaxis_title='Herzfrequenz in bpm')
         return fig
 
+    @staticmethod
+    def plot_moving_average_heart_rate(heart_rate, heart_rate_time, window_size, start_time, end_time):
+        """
+        Erstellt ein Plot der geglätteten Herzfrequenz über die Zeit.
+
+        Parameter:
+        heart_rate (list of float): Liste der Herzfrequenzen (in bpm).
+        heart_rate_time (list of float): Liste der Zeitpunkte (in s) für die Herzfrequenzen.
+        window_size (int): Die Fenstergröße für den gleitenden Durchschnitt.
+        start_time (float): Startzeitpunkt für den Plot (in s).
+        end_time (float): Endzeitpunkt für den Plot (in s).
+
+        Rückgabe:
+        plotly.graph_objects.Figure: Plotly-Figur.
+        """
+        # Filtere die Daten nach dem ausgewählten Zeitbereich
+        mask = (heart_rate_time >= start_time) & (heart_rate_time <= end_time)
+        filtered_heart_rate_time = heart_rate_time[mask]
+        filtered_heart_rate = heart_rate[mask]
+
+        smoothed_heart_rate = np.convolve(filtered_heart_rate, np.ones(window_size)/window_size, mode='valid')
+        smoothed_heart_rate_time = filtered_heart_rate_time[:len(smoothed_heart_rate)]  # Zeitpunkte entsprechend anpassen
+
+        title = f"Geglättete Herzfrequenz über die Zeit (Gleitender Durchschnitt, Fenstergröße={window_size})"
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=smoothed_heart_rate_time, y=smoothed_heart_rate, mode='lines+markers', name='Geglättete Herzfrequenz (bpm)'))
+        fig.update_layout(
+            title=title,
+            xaxis_title='Zeit (s)',
+            yaxis_title='Geglättete Herzfrequenz (bpm)',
+            margin=dict(l=40, r=40, t=40, b=80),
+        )
+        
+        # Erklärung zur Fenstergröße als separater Text
+        explanation_text = (
+            f"**Fenstergröße**: Die Anzahl der Datenpunkte, die im gleitenden Durchschnitt enthalten sind. "
+            f"Eine Fenstergröße von {window_size} bedeutet, dass der Durchschnitt über {window_size} aufeinanderfolgende "
+            f"Datenpunkte berechnet wird. Dies hilft, kurzfristige Schwankungen zu glätten und den zugrunde liegenden Trend deutlicher zu machen."
+        )
+
+        # Anzeige der Erklärung in Streamlit
+        st.write(explanation_text)
+
+        return fig
+
 # Testen der Funktionen
 if __name__ == "__main__":
     # Load the JSON data
     file = open("data/person_db.json")
     person_data = json.load(file)
-    ekg_dict, person_info = EKGdata.load_by_id(1)
+    ekg_dict, person_info = EKGdata.load_by_id(4)
     
     if ekg_dict:
         # Create an instance of EKGdata
@@ -120,5 +165,12 @@ if __name__ == "__main__":
         # Herzfrequenz-Plot anzeigen
         heart_rate_fig = ekg.make_hf_plot(heart_rate_times, heart_rate_at_peaks, start_time_hr, end_time_hr)
         st.plotly_chart(heart_rate_fig)
+
+         # Gleitender Durchschnitt der Herzfrequenz anzeigen
+        st.subheader("Wählen Sie die Fenstergröße für den gleitenden Durchschnitt:")
+        window_size = st.slider("Fenstergröße:", min_value=1, max_value=50, value=10, step=1)
+        smoothed_heart_rate_fig = EKGdata.plot_moving_average_heart_rate(heart_rate_at_peaks, heart_rate_times, window_size, start_time_hr, end_time_hr)
+        st.plotly_chart(smoothed_heart_rate_fig)
+
     else:
         st.error("Keine EKG-Daten gefunden.")

@@ -18,7 +18,7 @@ def home():
     st.title('Cardio Check')
     st.image('images/herz.jpg')
     st.write("Willkommen bei Cardio Check! Hier können Sie Ihre Herzgesundheit überprüfen und mehr über verschiedene Herzthemen erfahren.")
-    st.write("Cardio Check bietet eine Vielzahl von Tools und Informationen zur Überprüfung Ihrer Herzgesundheit. Sie können EKG-Daten analysieren, Ihre Herzfrequenz überwachen und informative Artikel über verschiedene Herzthemen lesen.")
+    st.write("Cardio Check bietet eine Vielzahl von Tools und Informationen zur Überprüfung Ihrer Herzgesundheit. Sie können EKG-Daten analysieren, Ihre Herzfrequenz überwachen, informative Artikel über verschiedene Herzthemen lesen und vieles mehr.")
     st.write("Wählen Sie eine der folgenden Optionen aus der Seitenleiste aus, um mehr zu erfahren oder sich anzumelden.")
     st.write("Viel Spaß beim Erkunden von Cardio Check!")
     
