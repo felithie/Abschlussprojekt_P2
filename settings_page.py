@@ -7,16 +7,25 @@ def user_profile_page():
     
     user_data = get_user_data(st.session_state['username'])
     if user_data:
-        age, weight, height, profile_image = user_data
+        age, weight, height, profile_image, firstname, lastname, birth_year, gender = user_data
     else:
-        age, weight, height, profile_image = None, None, None, None
+        age, weight, height, profile_image, firstname, lastname, birth_year, gender = None, None, None, None, None, None, None, None
 
     age = int(age) if age is not None else 1
     weight = float(weight) if weight is not None else 1.0
     height = float(height) if height is not None else 30.0
+    firstname = firstname if firstname is not None else ""
+    lastname = lastname if lastname is not None else ""
+    birth_year = int(birth_year) if birth_year is not None else 2000
+    gender = gender if gender is not None else ""
 
     if age == 0 or weight == 0.0 or height == 0.0:
         st.error("Bitte aktualisieren Sie Ihr Profil und geben Sie gültige Werte für Alter, Gewicht und Größe an.")
+
+    firstname = st.text_input("Vorname", value=firstname)
+    lastname = st.text_input("Nachname", value=lastname)
+    birth_year = st.number_input("Geburtsjahr", min_value=1900, max_value=2023, step=1, value=birth_year)
+    gender = st.selectbox("Geschlecht", ["", "Männlich", "Weiblich", "Divers"], index=["", "Männlich", "Weiblich", "Divers"].index(gender))
 
     age = st.number_input("Alter", min_value=1, max_value=120, step=1, value=age)
     weight = st.number_input("Gewicht (kg)", min_value=1.0, max_value=300.0, step=0.1, value=weight)
@@ -32,14 +41,14 @@ def user_profile_page():
         if age < 1 or weight < 1.0 or height < 30.0:
             st.error("Bitte geben Sie gültige Werte für Alter, Gewicht und Größe an.")
         else:
-            update_user(st.session_state['username'], age, weight, height, profile_image)
+            update_user(st.session_state['username'], age, weight, height, profile_image, firstname, lastname, birth_year, gender)
             st.success("Profil aktualisiert!")
             st.experimental_rerun()
 
     # Profilbild anzeigen
     if profile_image:
         st.subheader("Aktuelles Profilbild")
-        st.image(profile_image)
+        st.image(profile_image, width=150)
 
     st.subheader("EKG Dateien hochladen")
     uploaded_file = st.file_uploader("Wählen Sie eine Datei", type=["csv"], key="ekg_uploader")
@@ -62,4 +71,3 @@ def user_profile_page():
         files = get_user_files(user_id)
         for file in files:
             st.write(file)
-

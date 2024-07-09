@@ -119,7 +119,7 @@ def display_hrv_analysis():
         st.error("Keine EKG-Daten gefunden.")
         return
 
-    selected_file = st.selectbox("Wählen Sie eine Datei zur Analyse", files)
+    selected_file = st.selectbox("Wählen Sie eine Datei zur Analyse", files, key="ekg_selectbox")
     if selected_file:
         person_info = get_user_data(username)
         if person_info:
@@ -127,7 +127,8 @@ def display_hrv_analysis():
                 'age': person_info[0],
                 'weight': person_info[1],
                 'height': person_info[2],
-                'name': username  # Using username as the name since the actual name field is not retrieved
+                'name': username,  # Using username as the name since the actual name field is not retrieved
+                'gender': person_info[7]  # Retrieve gender from the database
             }
         ekg_data = EKGdataHRV(selected_file, person_info)
         nn_intervals = ekg_data.find_nn_intervals()
