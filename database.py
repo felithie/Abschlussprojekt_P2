@@ -1,4 +1,3 @@
-#database.py
 import streamlit as st
 import pandas as pd
 import sqlite3
@@ -10,26 +9,13 @@ def create_connection():
 def init_db():
     conn = create_connection()
     c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password TEXT,
-            email TEXT,
-            name TEXT,
-            age INTEGER,
-            weight REAL,
-            height REAL
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS user_files (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            file_path TEXT,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    ''')
+    # Check if 'profile_image' column exists and add it if it doesn't
+    c.execute("PRAGMA table_info(users)")
+    columns = [col[1] for col in c.fetchall()]
+    if 'profile_image' not in columns:
+        c.execute('''
+            ALTER TABLE users ADD COLUMN profile_image BLOB
+        ''')
     conn.commit()
     conn.close()
 
@@ -69,15 +55,22 @@ def get_user(username):
     conn.close()
     return user
 
-def update_user(username, age, weight, height):
+def update_user(username, age, weight, height, profile_image=None):
     try:
         conn = create_connection()
         c = conn.cursor()
-        c.execute('''
-            UPDATE users
-            SET age = ?, weight = ?, height = ?
-            WHERE username = ?
-        ''', (age, weight, height, username))
+        if profile_image:
+            c.execute('''
+                UPDATE users
+                SET age = ?, weight = ?, height = ?, profile_image = ?
+                WHERE username = ?
+            ''', (age, weight, height, profile_image, username))
+        else:
+            c.execute('''
+                UPDATE users
+                SET age = ?, weight = ?, height = ?
+                WHERE username = ?
+            ''', (age, weight, height, username))
         conn.commit()
     except Exception as e:
         print(f"Fehler beim Aktualisieren des Benutzers: {e}")
@@ -88,7 +81,7 @@ def get_user_data(username):
     conn = create_connection()
     c = conn.cursor()
     c.execute('''
-        SELECT age, weight, height FROM users WHERE username = ?
+        SELECT age, weight, height, profile_image FROM users WHERE username = ?
     ''', (username,))
     user_data = c.fetchone()
     conn.close()

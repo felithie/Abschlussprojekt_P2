@@ -7,9 +7,9 @@ def user_profile_page():
     
     user_data = get_user_data(st.session_state['username'])
     if user_data:
-        age, weight, height = user_data
+        age, weight, height, profile_image = user_data
     else:
-        age, weight, height = None, None, None
+        age, weight, height, profile_image = None, None, None, None
 
     age = int(age) if age is not None else 1
     weight = float(weight) if weight is not None else 1.0
@@ -22,16 +22,27 @@ def user_profile_page():
     weight = st.number_input("Gewicht (kg)", min_value=1.0, max_value=300.0, step=0.1, value=weight)
     height = st.number_input("Größe (cm)", min_value=30.0, max_value=300.0, step=0.1, value=height)
 
+    # Bild hochladen
+    st.subheader("Profilbild hochladen")
+    uploaded_image = st.file_uploader("Wählen Sie ein Bild", type=["jpg", "jpeg", "png"])
+    if uploaded_image is not None:
+        profile_image = uploaded_image.read()
+    
     if st.button("Speichern"):
         if age < 1 or weight < 1.0 or height < 30.0:
             st.error("Bitte geben Sie gültige Werte für Alter, Gewicht und Größe an.")
         else:
-            update_user(st.session_state['username'], age, weight, height)
+            update_user(st.session_state['username'], age, weight, height, profile_image)
             st.success("Profil aktualisiert!")
             st.experimental_rerun()
 
+    # Profilbild anzeigen
+    if profile_image:
+        st.subheader("Aktuelles Profilbild")
+        st.image(profile_image)
+
     st.subheader("EKG Dateien hochladen")
-    uploaded_file = st.file_uploader("Wählen Sie eine Datei", type=["csv"])
+    uploaded_file = st.file_uploader("Wählen Sie eine Datei", type=["csv"], key="ekg_uploader")
     if uploaded_file is not None:
         user_id = get_user_id(st.session_state['username'])
         if user_id is not None:
@@ -51,3 +62,4 @@ def user_profile_page():
         files = get_user_files(user_id)
         for file in files:
             st.write(file)
+
