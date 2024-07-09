@@ -2,7 +2,7 @@ import streamlit as st
 from calculatemaxHRpage import calculate_hrpage
 from settings_page import user_profile_page
 from CalculateBMI import calculate_bmi_page
-from HRV import display_hrv_analysis
+from EKGdataHRV_Plots import display_hrv_analysis
 from HR import display_hr_analysis
 from Powercurve import display_power_curve
 

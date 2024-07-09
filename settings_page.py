@@ -1,7 +1,8 @@
 import os
 import streamlit as st
 from database import get_user_data, update_user, get_user_id, add_user_file, get_user_files
-
+from database import init_db
+init_db()
 def user_profile_page():
     st.subheader("Profileinstellungen")
     

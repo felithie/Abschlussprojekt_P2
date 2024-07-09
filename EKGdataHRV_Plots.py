@@ -1,18 +1,17 @@
-import os
+import plotly.graph_objects as go
+import plotly.express as px
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
 import scipy.signal as signal
 from datetime import datetime
 import streamlit as st
-from database import get_user_id, get_user_files, get_user_data
+
+from database import get_user_age, get_user_data, get_user_height, get_user_id, get_user_weight
 
 class EKGdataHRV:
-
-    def __init__(self, file_path, person_info):
-        self.file_path = file_path
-        self.type = "Ruhe" if "Ruhe" in self.file_path else "Belastung" if "Belastung" in self.file_path else "Unbekannt"
-        self.df = pd.read_csv(self.file_path)
+    def __init__(self, df, person_info):
+        self.df = df
+        self.type = person_info.get('type', 'Unbekannt')
         self.df.columns = ['Time (s)', 'ECG Signal (mV)']  # Rename columns for consistency
         self.ecg_signal = self.df['ECG Signal (mV)'].values
         self.time = self.df['Time (s)'].values
@@ -27,7 +26,7 @@ class EKGdataHRV:
         return peaks, properties
 
     def find_r_peaks(self):
-        r_peaks, _ = EKGdataHRV.find_peaks(self.ecg_signal, 340, 5)
+        r_peaks, _ = EKGdataHRV.find_peaks(self.ecg_signal, 0.5, 200)  # Adjust threshold and distance
         return r_peaks
 
     def find_nn_intervals(self):
@@ -44,25 +43,6 @@ class EKGdataHRV:
             return 0
         sdnn = np.std(nn_intervals, ddof=1)
         return sdnn
-
-    def plot_poincare(self, nn_intervals):
-        if len(nn_intervals) > 1:
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=nn_intervals[:-1], y=nn_intervals[1:], mode='markers', name='NN-Intervalle', marker=dict(color='blue', opacity=0.5)))
-            fig.add_trace(go.Scatter(x=[min(nn_intervals), max(nn_intervals)], y=[min(nn_intervals), max(nn_intervals)], mode='lines', name='Identitätslinie', line=dict(color='red', dash='dash')))
-            fig.update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)')
-            return fig
-        else:
-            return go.Figure().update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)', annotations=[dict(text='Nicht genug Daten für das Diagramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
-
-    def plot_histogram(self, nn_intervals):
-        if len(nn_intervals) > 0:
-            fig = go.Figure()
-            fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=min(50, len(nn_intervals))))
-            fig.update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit')
-            return fig
-        else:
-            return go.Figure().update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit', annotations=[dict(text='Nicht genug Daten für das Histogramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
 
     def interpret_data(self):
         current_year = datetime.now().year
@@ -103,46 +83,61 @@ class EKGdataHRV:
 
         return interpretation
 
+def plot_poincare(nn_intervals):
+    if len(nn_intervals) > 1:
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=nn_intervals[:-1], y=nn_intervals[1:], mode='markers', name='NN-Intervalle', marker=dict(color='blue', opacity=0.5)))
+        fig.add_trace(go.Scatter(x=[min(nn_intervals), max(nn_intervals)], y=[min(nn_intervals), max(nn_intervals)], mode='lines', name='Identitätslinie', line=dict(color='red', dash='dash')))
+        fig.update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)')
+        return fig
+    else:
+        return go.Figure().update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)', annotations=[dict(text='Nicht genug Daten für das Diagramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
+
+def plot_histogram(nn_intervals):
+    if len(nn_intervals) > 0:
+        fig = go.Figure()
+        fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=max(2, len(nn_intervals))))
+        fig.update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit')
+        return fig
+    else:
+        return go.Figure().update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit', annotations=[dict(text='Nicht genug Daten für das Histogramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
+
+def plot_weight_trend(weight_df):
+    fig = px.line(weight_df, x="Datum", y="Gewicht", title="Gewichtsverlauf")
+    return fig
+
 def display_hrv_analysis():
-    username = st.session_state.get('username')
-    if not username:
-        st.error("Bitte melden Sie sich an.")
-        return
+    st.title("Herzfrequenzvariabilitätsanalyse (HRV)")
 
-    user_id = get_user_id(username)
-    if not user_id:
-        st.error("Benutzer nicht gefunden.")
-        return
+    uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        st.write("Hochgeladene Datei:")
+        st.write(df.head())
 
-    files = get_user_files(user_id)
-    if not files:
-        st.error("Keine EKG-Daten gefunden.")
-        return
-
-    selected_file = st.selectbox("Wählen Sie eine Datei zur Analyse", files, key="ekg_selectbox")
-    if selected_file:
-        person_info = get_user_data(username)
-        if person_info:
+        username = st.text_input("Benutzername")
+        if username:
             person_info = {
-                'age': person_info[0],
-                'weight': person_info[1],
-                'height': person_info[2],
-                'name': username,  # Using username as the name since the actual name field is not retrieved
-                'gender': person_info[7]  # Retrieve gender from the database
+                'age': get_user_age(username),
+                'weight': get_user_weight(username),
+                'height': get_user_height(username),
+                'name': get_user_id(username),
+                'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
+                'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
             }
-        ekg_data = EKGdataHRV(selected_file, person_info)
-        nn_intervals = ekg_data.find_nn_intervals()
-        hrv = EKGdataHRV.calculate_hrv(nn_intervals)
 
-        st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** `{hrv:.4f} s`")
+            if st.button("Analyse starten"):
+                ekg_data = EKGdataHRV(df, person_info)
+                nn_intervals = ekg_data.find_nn_intervals()
+                hrv = EKGdataHRV.calculate_hrv(nn_intervals)
 
-        poincare_fig = ekg_data.plot_poincare(nn_intervals)
-        histogram_fig = ekg_data.plot_histogram(nn_intervals)
-        interpretation = ekg_data.interpret_data()
+                st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** `{hrv:.4f} s`")
 
-        st.plotly_chart(poincare_fig)
-        st.plotly_chart(histogram_fig)
-        st.write(interpretation)
+                poincare_fig = plot_poincare(nn_intervals)
+                histogram_fig = plot_histogram(nn_intervals)
+                interpretation = ekg_data.interpret_data()
 
-if __name__ == "__main__":
-    display_hrv_analysis()
+                st.plotly_chart(poincare_fig)
+                st.plotly_chart(histogram_fig)
+                st.write(interpretation)
+

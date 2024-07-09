@@ -11,6 +11,7 @@ from heart_articles import herzratenvariabilitaet_article
 from anmeldung1 import login, register
 from personalized_page import personalized_page
 
+init_db()
 # Funktion zur Berechnung des Maximalpulses
 def maximalpuls_berechnen(alter, geschlecht):
     if geschlecht.lower() == 'männlich':
@@ -21,7 +22,7 @@ def maximalpuls_berechnen(alter, geschlecht):
         raise ValueError("Ungültiges Geschlecht. Bitte 'm' für männlich oder 'w' für weiblich eingeben.")
 
 # Funktion für die Startseite
-init_db()
+
 
 def home():
     st.title('Cardio Check')

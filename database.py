@@ -1,5 +1,3 @@
-import streamlit as st
-import pandas as pd
 import sqlite3
 
 def create_connection():
@@ -9,29 +7,33 @@ def create_connection():
 def init_db():
     conn = create_connection()
     c = conn.cursor()
-    # Check if 'profile_image', 'firstname', 'lastname', 'birth_year', 'gender' columns exist and add them if they don't
-    c.execute("PRAGMA table_info(users)")
-    columns = [col[1] for col in c.fetchall()]
-    if 'profile_image' not in columns:
-        c.execute('''
-            ALTER TABLE users ADD COLUMN profile_image BLOB
-        ''')
-    if 'firstname' not in columns:
-        c.execute('''
-            ALTER TABLE users ADD COLUMN firstname TEXT
-        ''')
-    if 'lastname' not in columns:
-        c.execute('''
-            ALTER TABLE users ADD COLUMN lastname TEXT
-        ''')
-    if 'birth_year' not in columns:
-        c.execute('''
-            ALTER TABLE users ADD COLUMN birth_year INTEGER
-        ''')
-    if 'gender' not in columns:
-        c.execute('''
-            ALTER TABLE users ADD COLUMN gender TEXT
-        ''')
+    # Check if 'users' table exists, create if not
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            password TEXT,
+            email TEXT,
+            name TEXT,
+            age INTEGER,
+            weight REAL,
+            height REAL,
+            profile_image BLOB,
+            firstname TEXT,
+            lastname TEXT,
+            birth_year INTEGER,
+            gender TEXT
+        )
+    ''')
+    # Check if 'user_files' table exists, create if not
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS user_files (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            file_path TEXT,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -156,3 +158,6 @@ def get_user_files(user_id):
     files = c.fetchall()
     conn.close()
     return [file[0] for file in files]
+
+# Initialize the database
+init_db()
