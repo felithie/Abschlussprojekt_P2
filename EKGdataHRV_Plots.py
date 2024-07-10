@@ -176,7 +176,7 @@ def display_hrv_analysis():
     """
     Zeigt die HRV-Analyse in der Streamlit-App an.
     """
-    st.subheader("Herzratenvariationsanalyse")
+    st.subheader("Herzratenvariabilitätsanalyse")
     if 'username' not in st.session_state: # Wenn der Benutzer nicht angemeldet ist,
         st.error("Sie müssen sich zuerst anmelden.")
         return
