@@ -75,9 +75,11 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 ### Probleme und deren Lösung  :exclamation:
 
 1. **Problem:** Das Hardcoden der drei Benutzer.
+
    **Lösung:** Diese Benutzer wurden hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion.
 
-2. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden, außer beim Account von Julian.
+3. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden, außer beim Account von Julian.
+
    **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen. Bei der Powercurve empfiehlt sich folgende Datei zum Testen:uploads/julian.huber/activity.csv (findet man im Repository im Ordner "Uploads" -> "julian.huber")
 
 ## WRAP UP
