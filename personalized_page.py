@@ -10,7 +10,7 @@ def personalized_page():
     st.subheader(f"Willkommen, {st.session_state['username']}!")
     st.write("Wählen Sie eine Option:")
 
-    tabs = st.tabs(["Profileinstellungen", "HR Analyse", "HRV Analyse",  "BMI berechnen", "Maximale Herzfrequenz berechnen", "Leistungskurve", "Abmelden"])
+    tabs = st.tabs(["Profileinstellungen", "HR Analyse", "HRV Analyse",  "BMI berechnen", "Max. Herzfrequenz berechnen", "Leistungskurve"])
 
     with tabs[0]:
         user_profile_page()
@@ -30,9 +30,3 @@ def personalized_page():
     with tabs[5]:
         display_power_curve()
 
-    with tabs[6]:
-        if st.button("Abmelden"):
-            st.session_state['logged_in'] = False
-            st.session_state['username'] = None
-            st.session_state['page'] = 'main_page'
-            st.experimental_rerun()

@@ -67,6 +67,12 @@ def user_profile_page():
         'weight': weight,
         'height': height
     }
+    
+    if st.button("Abmelden"):
+            st.session_state['logged_in'] = False
+            st.session_state['username'] = None
+            st.session_state['page'] = 'main_page'
+            st.experimental_rerun()
 
 # Aufruf der Benutzerprofilseite
 if __name__ == "__main__":
