@@ -1,8 +1,10 @@
 import os
 import streamlit as st
+from datetime import datetime
 from database import get_user_data, update_user, get_user_id, add_user_file, get_user_files
 from database import init_db
 init_db()
+
 def user_profile_page():
     st.subheader("Profileinstellungen")
     
@@ -12,7 +14,6 @@ def user_profile_page():
     else:
         age, weight, height, profile_image, firstname, lastname, birth_year, gender = None, None, None, None, None, None, None, None
 
-    age = int(age) if age is not None else 1
     weight = float(weight) if weight is not None else 1.0
     height = float(height) if height is not None else 30.0
     firstname = firstname if firstname is not None else ""
@@ -20,15 +21,20 @@ def user_profile_page():
     birth_year = int(birth_year) if birth_year is not None else 2000
     gender = gender if gender is not None else ""
 
+    current_year = datetime.now().year
+    if birth_year:
+        age = current_year - birth_year
+
     if age == 0 or weight == 0.0 or height == 0.0:
         st.error("Bitte aktualisieren Sie Ihr Profil und geben Sie gültige Werte für Alter, Gewicht und Größe an.")
 
     firstname = st.text_input("Vorname", value=firstname)
     lastname = st.text_input("Nachname", value=lastname)
-    birth_year = st.number_input("Geburtsjahr", min_value=1900, max_value=2023, step=1, value=birth_year)
+    birth_year = st.number_input("Geburtsjahr", min_value=1900, max_value=current_year, step=1, value=birth_year)
     gender = st.selectbox("Geschlecht", ["", "Männlich", "Weiblich", "Divers"], index=["", "Männlich", "Weiblich", "Divers"].index(gender))
 
-    age = st.number_input("Alter", min_value=1, max_value=120, step=1, value=age)
+    age = current_year - birth_year
+    st.write(f"Alter: {age} Jahre")
     weight = st.number_input("Gewicht (kg)", min_value=1.0, max_value=300.0, step=0.1, value=weight)
     height = st.number_input("Größe (cm)", min_value=30.0, max_value=300.0, step=0.1, value=height)
 
@@ -72,3 +78,7 @@ def user_profile_page():
         files = get_user_files(user_id)
         for file in files:
             st.write(file)
+
+# Aufruf der Benutzerprofilseite
+if __name__ == "__main__":
+    user_profile_page()
