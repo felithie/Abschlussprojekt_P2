@@ -37,18 +37,3 @@ def register():
         except Exception as e:  # Allgemeine Fehlermeldung
             st.error(f"Unerwarteter Fehler bei der Registrierung: {e}")
 
-# Hauptteil der Anwendung, der die Register- oder Login-Funktionalität anzeigt
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
-
-if st.session_state['logged_in']:
-    user_profile_page()
-else:
-    st.title("Willkommen zur Herzfrequenzanalyse App")
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.radio("Gehe zu", ["Anmeldung", "Registrierung"])
-
-    if selection == "Anmeldung":
-        login()
-    else:
-        register()
