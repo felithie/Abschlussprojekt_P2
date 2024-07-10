@@ -27,7 +27,7 @@ Um Cardio Check auf Ihrem lokalen System zu installieren, führen Sie bitte die 
 
 ## Benutzung
 
-Nach dem Start der Anwendung können Sie über die Seitenleiste zwischen verschiedenen Seiten navigieren. Jede Seite bietet unterschiedliche Funktionen und Informationen. Im Folgenden wird jede Seite detailliert beschrieben:
+Nach dem Start der Anwendung können Sie über die Seitenleiste zwischen verschiedenen Seiten navigieren. Jede Seite bietet unterschiedliche Funktionen und Informationen:
 
 ### Startseite
 
