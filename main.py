@@ -38,7 +38,7 @@ def page1():
 
 # Funktion für Seite 2
 def page2():
-    st.title("Streamlit Anmeldungsseite")
+    st.title("Persönlicher Bereich")
     
     if 'logged_in' not in st.session_state:
         st.session_state['logged_in'] = False

@@ -94,6 +94,7 @@ class EKGdata:
         return fig
 
 def display_hr_analysis():
+    st.subheader("Herzfrequenzanalyse")
     if 'username' not in st.session_state:
         st.error("Sie müssen sich zuerst anmelden.")
         return
@@ -104,12 +105,18 @@ def display_hr_analysis():
     if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
         run_streamlit_app(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
     else:
-        st.write("Geben Sie die Details für die Herzratenanalyse ein")
-        # Platzhalter für weitere Eingaben des Nutzers
+        # Retrieve user profile from session state
+        user_profile = st.session_state.get('user_profile', {})
+        age = user_profile.get('age', 30)
+        gender = user_profile.get('gender', 'unbekannt')
+
+        st.write(f"Alter: {age} Jahre")
+        st.write(f"Geschlecht: {gender}")
+
         person_info = {
             'name': username,
-            'age': st.number_input("Alter", min_value=0, max_value=120, value=30, key="hr_age_input"),
-            'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"], key="hr_gender_selectbox"),
+            'age': age,
+            'gender': gender,
             'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"], key="hr_type_selectbox")
         }
         uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv", key="hr_file_uploader")

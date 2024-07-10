@@ -74,7 +74,8 @@ def analyze_power_curve(df_pc):
     return analysis
 
 def display_power_curve():
-    st.title("Leistungskurve Visualisierung")
+    st.subheader("Leistungskurve")
+    st.write("Laden Sie Ihre Aktivitätsdaten im CSV-Format hoch, um Ihre Leistungskurve zu analysieren.")
 
     uploaded_file = st.file_uploader("Upload your csv data file", type=["csv"])
 

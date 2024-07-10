@@ -4,6 +4,7 @@ from database import get_user_age
 from calculatemaxHR import calculate_hr
 
 def calculate_hrpage():
+    st.subheader("Maximale Herzfrequenz berechnen")
     age = get_user_age(st.session_state['username'])
 
     # Alter aus den gespeicherten Benutzerdaten verwenden und maximale Herzfrequenz berechnen
@@ -15,12 +16,9 @@ def calculate_hrpage():
         st.write(f"Ihre maximale Herzfrequenz: {max_hr}")   
 
     # Zurück zur Hauptseite
-    if st.button("Zurück zur Hauptseite"):
-        st.session_state['page'] = 'main_page'
-        st.experimental_rerun()
+    #if st.button("Zurück zur Hauptseite"):
+        #st.session_state['page'] = 'main_page'
+        #st.experimental_rerun()
 
 
-    '''# Zurück zur Hauptseite
-    if st.button("Zurück zur Hauptseite"):
-        st.session_state['page'] = 'main_page'
-        st.experimental_rerun()'''
+

@@ -82,6 +82,7 @@ class EKGdataHRV:
         return interpretation
 
 def display_hrv_analysis():
+    st.subheader("Herzratenvariabilitäts-Analyse")
     if 'username' not in st.session_state:
         st.error("Sie müssen sich zuerst anmelden.")
         return
