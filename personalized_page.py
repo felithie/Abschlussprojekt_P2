@@ -6,7 +6,7 @@ from EKGdataHRV_Plots import display_hrv_analysis
 from HR import display_hr_analysis
 from Powercurve import display_power_curve
 
-def personalized_page(): # personalisierte Seite mit verschiedenen Optionen
+def personalized_page(): # personalisierte Seite mit verschiedenen Optionen, main.py des personalisierten Bereichs
     st.subheader(f"Willkommen, {st.session_state['username']}!")
     st.write("Wählen Sie eine Option:")
 

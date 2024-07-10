@@ -15,10 +15,7 @@ def calculate_hrpage():
         max_hr = calculate_hr(age)
         st.write(f"Ihre maximale Herzfrequenz: {max_hr}")   # Ausgabe der maximalen Herzfrequenz
 
-    # Zurück zur Hauptseite
-    #if st.button("Zurück zur Hauptseite"):
-        #st.session_state['page'] = 'main_page'
-        #st.experimental_rerun()
+    
 
 
 
