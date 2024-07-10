@@ -43,7 +43,7 @@ Die Seite "About Us" bietet Informationen über das Team und die Mission von Car
 
 ### Anmeldung
 
-Auf der Anmeldungsseite können Sie sich entweder anmelden oder ein neues Benutzerkonto registrieren. Wenn Sie sich registrieren, können Sie ein Profil erstellen und nach der Anmeldung auf personalisierte Inhalte und Funktionen zugreifen. Sobald Sie angemeldet sind, haben Sie Zugriff auf Daten wie Ihren BMI, Ihre maximale Herzrate, Ihre generelle Herzfrequenz, Ihre Herzfrequenzvariabilität und weitere Gesundheitsdaten. Sie können auch aus einer eigenen CSV-Datei einen Plot Ihrer persönlichen Powercurve erstellen lassen.
+Auf der Anmeldungsseite können Sie sich entweder anmelden oder ein neues Benutzerkonto registrieren. Wenn Sie sich registrieren, können Sie ein Profil erstellen und nach der Anmeldung auf personalisierte Inhalte und Funktionen zugreifen. Sobald Sie angemeldet sind, haben Sie Zugriff auf Daten wie Ihren BMI, Ihre maximale Herzrate, Ihre generelle Herzfrequenz, Ihre Herzfrequenzvariabilität und weitere Gesundheitsdaten. Sie können auch aus einer eigenen CSV-Datei einen Plot Ihrer persönlichen Powercurve erstellen lassen. Bei der Powercurve empfiehlt sich folgende Datei zum Testen:uploads/julian.huber/activity.csv (findet man im Repository im Ordner "Uploads" -> "julian.huber")
 
 Um die App auszutesten, können Sie eines dieser drei Profile benutzen:
 - **Benutzername:** julian.huber, Passwort: 123
@@ -80,7 +80,7 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 
 3. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden, außer beim Account von Julian.
 
-   **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen. Bei der Powercurve empfiehlt sich folgende Datei zum Testen:uploads/julian.huber/activity.csv (findet man im Repository im Ordner "Uploads" -> "julian.huber")
+   **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen.
 
 ## WRAP UP
 
@@ -95,14 +95,14 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 - [x] Stil z.B. Namenskonventionen, sinnvolle Aufteilung in Module, Objektorientierung 
 - [x] Kommentare und Docstrings 
 - [x] Design für Computer Bildschirm optimiert und optisch ansprechend
-- [x] Deployment auf Heroku oder Streamlit Sharing 
+- [x] Deployment auf Streamlit Sharing 
 
 ### Freie Aufgaben
 
 - [x] Neue Daten mit einem Nutzer verknüpfen
 - [x] Nutzerdaten editierbar machen
 - [x] Benutzerspezifische Login-Funktion
-- [x] Daten in einer SQLite oder tinyDB speichern 
+- [x] Daten in einer SQLite speichern 
 - [x] Herzrate im sinnvollen gleitenden Durchschnitt als Plot anzeigen
 - [x] Herzratenvariabilität anzeigen 
 - [x] Maximalpuls anzeigen (ist außerhalb des Anmeldebefehls, damit es jeder benutzen kann, auch ohne Konto)
