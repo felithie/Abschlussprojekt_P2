@@ -47,7 +47,7 @@ Auf der Anmeldungsseite können Sie sich entweder anmelden oder ein neues Benutz
 
 Um die App auszutesten, können Sie eines dieser drei Profile benutzen:
 - **Benutzername:** julian.huber, Passwort: 123
-- **Benutzername:** yunus.schmirander, Passwort: 123
+- **Benutzername:** yannic.heyer, Passwort: 123
 - **Benutzername:** yunus.schmirander, Passwort: 123
 
 Oder Sie erstellen ein eigenes Konto unter **"Registrieren"**. 
