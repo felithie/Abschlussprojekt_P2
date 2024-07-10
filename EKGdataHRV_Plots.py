@@ -112,12 +112,18 @@ def display_hrv_analysis():
     if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
         display_in_streamlit(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
     else:
-        st.write("Geben Sie die Details für die HRV-Analyse ein")
-        # Platzhalter für weitere Eingaben des Nutzers
+        # Retrieve user profile from session state
+        user_profile = st.session_state.get('user_profile', {})
+        age = user_profile.get('age', 30)
+        gender = user_profile.get('gender', 'unbekannt')
+
+        st.write(f"Alter: {age} Jahre")
+        st.write(f"Geschlecht: {gender}")
+
         person_info = {
             'name': username,
-            'age': st.number_input("Alter", min_value=0, max_value=120, value=30),
-            'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
+            'age': age,
+            'gender': gender,
             'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
         }
         uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
