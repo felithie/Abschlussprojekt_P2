@@ -1,3 +1,4 @@
+'''Diese ist ausschleißlich für julian.huber, yannic.heyer, yunus.schmirander '''
 import json
 import pandas as pd
 import numpy as np
@@ -19,12 +20,12 @@ class EKGdata:
         self.ecg_signal = self.df['EKG in mV'].values
         self.time = self.df['Time in s'].values
 
-    @staticmethod
+    @staticmethod # um die Personendaten zu laden
     def load_person_data():
         with open("data/person_db.json") as file:
             return json.load(file)
 
-    @staticmethod
+    @staticmethod # um die Personendaten nach Benutzernamen zu laden
     def load_by_username(person_data, username):
         for person in person_data:
             if 'username' in person and person['username'] == username:
@@ -32,7 +33,7 @@ class EKGdata:
         return None
 
 
-    @staticmethod
+    @staticmethod #um die Personendaten nach ID zu laden
     def load_by_id(ekg_id):
         person_data = EKGdata.load_person_data()
         for person in person_data:
@@ -42,13 +43,13 @@ class EKGdata:
                     return ekg
         return None
 
-    @staticmethod
+    @staticmethod #um die Peaks zu finden
     def find_peaks(series, threshold, distance):
         # Verwenden von scipy.signal.find_peaks zur Spitzenfindung
         peaks, _ = signal.find_peaks(series, height=threshold, distance=distance)
         return peaks
 
-    @staticmethod
+    @staticmethod #um die Herzfrequenz zu schätzen
     def estimate_hr(peaks, time_in_s):
         peak_times_sec = time_in_s[peaks]
         rr_intervals = np.diff(peak_times_sec)
@@ -56,7 +57,7 @@ class EKGdata:
         heart_rate_times = peak_times_sec[1:]
         return heart_rate_times, heart_rate_at_peaks
 
-    @staticmethod
+    @staticmethod #um den EKG-Plot zu erstellen
     def make_ekg_plot(peaks, df, start_time, end_time):
         mask = (df["Time in s"] >= start_time) & (df["Time in s"] <= end_time)
         filtered_df = df[mask]
@@ -67,7 +68,7 @@ class EKGdata:
         fig.update_layout(title='EKG über die Zeit', xaxis_title='Zeit in s', yaxis_title='EKG in mV')
         return fig
     
-    @staticmethod
+    @staticmethod #um den Herzfrequenz-Plot zu erstellen
     def make_hf_plot(heart_rate_times, heart_rate_at_peaks, start_time, end_time):
         mask = (heart_rate_times >= start_time) & (heart_rate_times <= end_time)
         filtered_times = heart_rate_times[mask]
@@ -77,7 +78,7 @@ class EKGdata:
         fig.update_layout(title='Herzfrequenz über die Zeit', xaxis_title='Zeit in s', yaxis_title='Herzfrequenz in bpm')
         return fig
 
-    @staticmethod
+    @staticmethod #um den geglätteten Herzfrequenz-Plot zu erstellen
     def plot_moving_average_heart_rate(heart_rate, heart_rate_time, window_size, start_time, end_time):
         """
         Erstellt ein Plot der geglätteten Herzfrequenz über die Zeit.
@@ -175,3 +176,9 @@ if __name__ == "__main__":
     username = st.text_input("Geben Sie den Benutzernamen ein:")
     if username:
         run_streamlit_app(username)
+'''Die Definition der Funktion run_streamlit_app(username) ist der Hauptteil des Skripts. Er sorgt dafür,
+ dass die Benutzeroberfläche für die Herzfrequenzanalyse angezeigt wird,
+   wenn der Benutzer einen Benutzernamen eingibt.
+ Die Funktion lädt die Personendaten aus der JSON-Datei,
+   sucht nach dem ausgewählten Benutzernamen und zeigt die verfügbaren EKG-Tests für diesen Benutzer an.
+     Der Benutzer kann dann ein EKG auswählen und die Herzfrequenzanalyse durchführen.'''

@@ -1,5 +1,8 @@
 # heart_article.py
 import streamlit as st
+# diese .py Datei enthält die Artikel über das Herz und die Herzgesundheit
+# sie werden in der Hauptseite angezeigt
+# sie enthalten Informationen über die Anatomie des Herzens, die Herzfrequenz, das Elektrokardiogramm (EKG), Vorhofflimmern und die Herzratenvariabilität (HRV)
 
 def heart_article():
     st.title("Das Herz: Ein lebenswichtiges Organ")

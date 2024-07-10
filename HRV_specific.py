@@ -1,3 +1,4 @@
+'''Diese ist ausschleißlich für julian.huber, yannic.heyer, yunus.schmirander '''
 import json
 import pandas as pd
 import numpy as np
@@ -6,7 +7,7 @@ import streamlit as st
 import scipy.signal as signal
 from datetime import datetime
 
-class EKGdataHRV:
+class EKGdataHRV: # Klasse EKG-Data für Peakfinder, die uns ermöglicht peaks zu finden
     def __init__(self, ekg_dict, person_info):
         self.id = ekg_dict["id"]
         self.date = ekg_dict["date"]
@@ -18,35 +19,35 @@ class EKGdataHRV:
         self.time = self.df['Time in s'].values
         self.person_info = person_info
 
-    @staticmethod
+    @staticmethod # um die Personendaten zu laden
     def load_person_data():
         with open("data/person_db.json") as file:
             return json.load(file)
 
-    @staticmethod
+    @staticmethod # um die Personendaten nach Benutzernamen zu laden
     def load_by_username(person_data, username):
         for person in person_data:
             if 'username' in person and person['username'] == username:
                 return person
         return None
 
-    @staticmethod
+    @staticmethod #um die Peaks zu finden
     def find_peaks(series, threshold, distance):
         peaks, _ = signal.find_peaks(series, height=threshold, distance=distance)
         return peaks
 
-    def find_r_peaks(self):
+    def find_r_peaks(self): #um die R-Peaks zu finden
         r_peaks = EKGdataHRV.find_peaks(self.ecg_signal, 340, 5)
         self.r_peaks = r_peaks
         return r_peaks
 
-    def find_nn_intervals(self):
+    def find_nn_intervals(self): #um die NN-Intervalle zu finden
         time = self.df['Time in s'].values
         nn_intervals = np.diff(time[self.find_r_peaks()])
         nn_intervals = nn_intervals[(nn_intervals > 0.3) & (nn_intervals < 2)]
         return nn_intervals
 
-    @staticmethod
+    @staticmethod #um die Herzfrequenzvariabilität zu berechnen
     def calculate_hrv(nn_intervals):
         if len(nn_intervals) > 0:
             sdnn = np.std(nn_intervals, ddof=1)
@@ -63,7 +64,8 @@ class EKGdataHRV:
             return fig
         else:
             return go.Figure().update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)', annotations=[dict(text='Nicht genug Daten für das Diagramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
-
+# Die Funktion plot_poincare erstellt ein Poincaré-Diagramm der NN-Intervalle. Das Poincaré-Diagramm ist eine grafische Darstellung der Herzfrequenzvariabilität (HRV), bei der die zeitlichen Abstände zwischen aufeinanderfolgenden Herzschlägen (NN-Intervalle) aufgetragen werden. Im Poincaré-Diagramm wird das NN-Intervall NN_i auf der x-Achse und das folgende Intervall NN_(i+1) auf der y-Achse dargestellt. Dies ermöglicht die Visualisierung der Dynamik und Variabilität der Herzfrequenz über die Zeit.
+    
     def plot_histogram(self, nn_intervals):
         if len(nn_intervals) > 0:
             fig = go.Figure()
@@ -72,6 +74,7 @@ class EKGdataHRV:
             return fig
         else:
             return go.Figure().update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit', annotations=[dict(text='Nicht genug Daten für das Histogramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
+# Die Funktion plot_histogram erstellt ein Histogramm der NN-Intervalle. Ein Histogramm ist eine grafische Darstellung der Verteilung eines Datensatzes. In Bezug auf die HRV zeigt ein Histogramm die Häufigkeit der verschiedenen NN-Intervalle (zeitliche Abstände zwischen Herzschlägen) in einem bestimmten Zeitraum.
 
     def interpret_data(self):
         current_year = datetime.now().year
@@ -113,6 +116,7 @@ class EKGdataHRV:
                 interpretation += "Eine HRV (SDNN) von unter 0.1 Sekunden kann auf eine geringe Herzfrequenzvariabilität hinweisen, was auf Stress, mangelnde körperliche Aktivität oder potenzielle Herzprobleme hinweisen kann. Es wird empfohlen, dies weiter zu untersuchen."
 
         return interpretation
+'''Die Funktion interpret_data erstellt eine Interpretation der HRV-Daten basierend auf den berechneten Werten und den Personendaten. Die Interpretation enthält Informationen über die Person (Name, Alter, Geschlecht), den Typ des EKGs (Ruhe oder Belastung), die HRV-Werte und eine Bewertung der HRV basierend auf dem Alter und Geschlecht der Person. Die Interpretation gibt auch Empfehlungen für den Fall, dass die HRV-Werte außerhalb des normalen Bereichs liegen.'''
 
 def display_in_streamlit(username):
     person_data = EKGdataHRV.load_person_data()
@@ -162,3 +166,4 @@ def display_in_streamlit(username):
         st.write(interpretation)
     else:
         st.write("Benutzername nicht gefunden. Bitte überprüfen Sie Ihre Eingabe.")
+'''Die Funktion display_in_streamlit ermöglicht es uns, die HRV-Daten in Streamlit anzuzeigen. Sie lädt die Personendaten und das ausgewählte EKG basierend auf dem Benutzernamen und zeigt die berechnete Herzfrequenzvariabilität (HRV) sowie die Poincaré-Diagramme und Histogramme der NN-Intervalle an. Die Funktion erstellt auch eine Interpretation der HRV-Daten basierend auf den berechneten Werten und den Personendaten. Die Interpretation enthält Informationen über die Person (Name, Alter, Geschlecht), den Typ des EKGs (Ruhe oder Belastung), die HRV-Werte und eine Bewertung der HRV basierend auf dem Alter und Geschlecht der Person. Die Interpretation gibt auch Empfehlungen für den Fall, dass die HRV-Werte außerhalb des normalen Bereichs liegen.'''

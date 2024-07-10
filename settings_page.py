@@ -4,9 +4,9 @@ from datetime import datetime
 from database import get_user_data, update_user, get_user_id, add_user_file, get_user_files
 from database import init_db
 
-init_db()
+init_db() # Initialisierung der Datenbank
 
-def user_profile_page():
+def user_profile_page(): # Seite zum Anzeigen und Bearbeiten des Benutzerprofils
     st.subheader("Profileinstellungen")
     
     user_data = get_user_data(st.session_state['username'])
@@ -24,9 +24,9 @@ def user_profile_page():
 
     current_year = datetime.now().year
     if birth_year:
-        age = current_year - birth_year
+        age = current_year - birth_year # Berechnung des Alters aus dem Geburtsjahr
 
-    if age == 0 or weight == 0.0 or height == 0.0:
+    if age == 0 or weight == 0.0 or height == 0.0: # Fehlermeldung, wenn Alter, Gewicht oder Größe nicht gültig sind
         st.error("Bitte aktualisieren Sie Ihr Profil und geben Sie gültige Werte für Alter, Gewicht und Größe an.")
 
     firstname = st.text_input("Vorname", value=firstname)
@@ -67,7 +67,7 @@ def user_profile_page():
         'weight': weight,
         'height': height
     }
-    
+    # Abmelden-Button
     if st.button("Abmelden"):
             st.session_state['logged_in'] = False
             st.session_state['username'] = None

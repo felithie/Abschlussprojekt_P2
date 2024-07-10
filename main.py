@@ -22,8 +22,6 @@ def maximalpuls_berechnen(alter, geschlecht):
         raise ValueError("Ungültiges Geschlecht. Bitte 'm' für männlich oder 'w' für weiblich eingeben.")
 
 # Funktion für die Startseite
-
-
 def home():
     st.title('Cardio Check')
     st.image('images/herz.jpg')
@@ -32,11 +30,11 @@ def home():
     st.write("Wählen Sie eine der folgenden Optionen aus der Seitenleiste aus, um mehr zu erfahren oder sich anzumelden.")
     st.write("Viel Spaß beim Erkunden von Cardio Check!")
     
-# Funktion für Seite 1
+# Funktion für Seite 1, Über uns
 def page1():
     about_us()
 
-# Funktion für Seite 2
+# Funktion für Seite 2, Anmeldung und Registrierung
 def page2():
     st.title("Persönlicher Bereich")
     
@@ -54,7 +52,7 @@ def page2():
         elif choice == "Registrierung":
             register()
 
-# Funktion für Seite 3
+# Funktion für Seite 3, Über das Herz
 def page3():
     st.title('Über das Herz')
     st.write('Willkommen auf der Informationsseite über das Herz.')
@@ -79,7 +77,7 @@ def page3():
     with st.expander("Herzratenvariabilität", expanded=False):
         herzratenvariabilitaet_article()
 
-# Funktion für Seite 4
+# Funktion für Seite 4, Trainingspuls-Rechner
 def page4():
     st.title("Trainingspuls- und Maximalpuls-Rechner")
     st.write("""
@@ -115,7 +113,7 @@ def page4():
             | 80 - 90 %                       | Anaerobe Zone         | Grundlagen-Ausdauer-Training 2        | Enorme Steigerung von Kraft, Geschwindigkeit und Muskelvolumen. Ohne Verwendung von Sauerstoff werden hier Nährstoffe verbrannt. Ideal für erfahrene Sportler, Wettkampftraining. Hohe Anstrengung, Muskelermüdung, schwere Atmung, Laktatbildung. |
             | 90 - 100 %                      | Maximaltraining       | Wettkampf-spezifisches Ausdauer-Training | Maximale Leistungssteigerung. Maximale Beanspruchung von Herz, Kreislauf, Gelenken und Muskeln. Ideal für sehr erfahrene und fitte Sportler, nur kurze Intervalle, Sprinttraining, die letzte Vorbereitung auf kurze Renndistanzen. Maximale Anstrengung, sehr schnelle Muskelermüdung, starkes Brennen in den Muskeln, sehr schwere Atmung, Laktatbildung, Schwindel, manchmal auch Kopfschmerzen oder Übelkeit. Achtung! Erhebliche Gefahr für das Herz bei Freizeitsportlern! Belastung des ganzen Körpers und des Immunsystems schon bei mittellangen Einheiten. |
         """)
-# Funktion für Seite 5
+# Funktion für Seite 5, Impressum
 def page5():
     impressum()
 

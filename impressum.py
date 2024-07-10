@@ -28,3 +28,4 @@ def impressum():
 
     Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
     """)
+# Die Funktion impressum() zeigt die Impressumsseite mit Kontaktinformationen und einem Haftungsausschluss an. Auf der Hauptseite des Dashboards wird ein Link zum Impressum angezeigt, der die Benutzer zur Impressumsseite führt.

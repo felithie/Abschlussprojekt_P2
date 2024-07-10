@@ -3,7 +3,7 @@ import sqlite3
 def create_connection():
     conn = sqlite3.connect('data.db')
     return conn
-
+# Die Funktion create_connection() stellt eine Verbindung zur SQLite-Datenbank her und gibt diese zurück.
 def init_db():
     conn = create_connection()
     c = conn.cursor()
@@ -25,7 +25,8 @@ def init_db():
             gender TEXT
         )
     ''')
-    # Check if 'user_files' table exists, create if not
+    # Die Funktion init_db() initialisiert die Datenbank, indem sie die Tabellen 'users' und 'user_files' erstellt, falls sie noch nicht existieren.
+    # Die Tabelle 'users' enthält die Benutzerdaten, während die Tabelle 'user_files' die Dateipfade der Benutzerdateien speichert.
     c.execute('''
         CREATE TABLE IF NOT EXISTS user_files (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +49,7 @@ def get_user_id(username):
     if user_id:
         return user_id[0]
     return None
+# Die Funktion get_user_id(username) gibt die Benutzer-ID für einen bestimmten Benutzernamen zurück.
 
 def register_user(username, password, email, name):
     try:
@@ -62,7 +64,8 @@ def register_user(username, password, email, name):
         raise ValueError("Username already exists")
     finally:
         conn.close()
-
+# Die Funktion register_user(username, password, email, name) registriert einen neuen Benutzer in der Datenbank.
+# Sie fügt den Benutzernamen, das Passwort, die E-Mail-Adresse und den Namen des Benutzers in die Tabelle 'users' ein.
 def get_user(username):
     conn = create_connection()
     c = conn.cursor()
@@ -72,6 +75,8 @@ def get_user(username):
     user = c.fetchone()
     conn.close()
     return user
+# Die Funktion get_user(username) gibt die Benutzerdaten für einen bestimmten Benutzernamen zurück.
+# Sie sucht in der Tabelle 'users' nach dem Benutzernamen und gibt die entsprechenden Daten zurück.
 
 def update_user(username, age, weight, height, profile_image=None, firstname=None, lastname=None, birth_year=None, gender=None):
     try:
@@ -94,6 +99,8 @@ def update_user(username, age, weight, height, profile_image=None, firstname=Non
         print(f"Fehler beim Aktualisieren des Benutzers: {e}")
     finally:
         conn.close()
+# Die Funktion update_user macht es möglich, die Benutzerdaten in der Datenbank zu aktualisieren.
+# Sie aktualisiert das Alter, das Gewicht, die Größe, das Profilbild, den Vornamen, den Nachnamen, das Geburtsjahr und das Geschlecht des Benutzers.
 
 def get_user_data(username):
     conn = create_connection()
@@ -104,6 +111,7 @@ def get_user_data(username):
     user_data = c.fetchone()
     conn.close()
     return user_data
+# Die Funktion get_user_data(username) gibt die Benutzerdaten für einen bestimmten Benutzernamen zurück.
 
 def get_user_age(username):
     conn = create_connection()
@@ -114,6 +122,7 @@ def get_user_age(username):
     if age:
         return age[0]
     return None
+# Die Funktion get_user_age(username) gibt das Alter eines Benutzers zurück, der in der Datenbank gespeichert ist.
 
 def get_user_weight(username):
     conn = create_connection()
@@ -124,6 +133,7 @@ def get_user_weight(username):
     if weight:
         return weight[0]
     return None
+# Die Funktion get_user_weight(username) gibt das Gewicht eines Benutzers zurück, der in der Datenbank gespeichert ist.
 
 def get_user_height(username):
     conn = create_connection()
@@ -134,6 +144,7 @@ def get_user_height(username):
     if height:
         return height[0]
     return None
+# Die Funktion get_user_height(username) gibt die Größe eines Benutzers zurück, der in der Datenbank gespeichert ist.
 
 def add_user_file(user_id, file_path):
     try:
@@ -148,6 +159,8 @@ def add_user_file(user_id, file_path):
         print(f"Fehler beim Hinzufügen der Datei: {e}")
     finally:
         conn.close()
+# Die Funktion add_user_file(user_id, file_path) fügt den Dateipfad einer Datei hinzu, die einem Benutzer zugeordnet ist.
+# Sie fügt den Benutzer-ID und den Dateipfad in die Tabelle 'user_files' ein.
 
 def get_user_files(user_id):
     conn = create_connection()
@@ -158,6 +171,7 @@ def get_user_files(user_id):
     files = c.fetchall()
     conn.close()
     return [file[0] for file in files]
+# Die Funktion get_user_files(user_id) gibt die Dateipfade der Dateien zurück, die einem bestimmten Benutzer zugeordnet sind.
 
-# Initialize the database
+# Initialisierung der Datenbank
 init_db()
