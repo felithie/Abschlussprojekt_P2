@@ -78,7 +78,7 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 
    **Lösung:** Diese Benutzer wurden hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion.
 
-3. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden, außer beim Account von Julian.
+3. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden.
 
    **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen.
 
