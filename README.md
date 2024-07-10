@@ -1,9 +1,8 @@
-# CardioCheck App
-
+# CardioCheck App 🫀
 ---
 
 Willkommen bei **Cardio Check**! Diese Anwendung wurde entwickelt, um Benutzern zu helfen, ihre Herzgesundheit zu überwachen und mehr über verschiedene Herzthemen zu erfahren. Cardio Check bietet eine Vielzahl von Tools und Informationen, die es Ihnen ermöglichen, EKG-Daten zu analysieren, Ihre Herzfrequenz zu überwachen, informative Artikel zu lesen und vieles mehr.
-App Link: 
+**App Link:** https://cardiochecksfr.streamlit.app/
 ## Installation
 
 Um Cardio Check auf Ihrem lokalen System zu installieren, führen Sie bitte die folgenden Schritte aus:
@@ -46,7 +45,7 @@ Um die App auszutesten, können Sie eines dieser drei Profile benutzen:
 - **Benutzername:** yunus.schmirander, Passwort: 123
 - **Benutzername:** yunus.schmirander, Passwort: 123
 
-Oder Sie erstellen ein eigenes Konto unter **"Registrieren anmelden"**. 
+Oder Sie erstellen ein eigenes Konto unter **"Registrieren"**. 
 
 > [!IMPORTANT]
 > Diese drei Benutzer sind hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion. Um die Funktionen eines neuen Profils auszutesten, empfiehlt sich folgende Datei hochzuladen:uploads/ruhe_ecg_data.csv (findet man im Repository im Ordner "Uploads") .
@@ -68,14 +67,13 @@ Auf dieser Seite können Sie Ihren Maximalpuls und Ihre individuellen Belastungs
 
 Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwicklern. Hier finden Sie Angaben zum Datenschutz und zu den Urhebern der Anwendung.
 
-> [!IMPORTANT]
->  Probleme und deren Lösung
+### Probleme und deren Lösung  :exclamation:
 
 1. **Problem:** Das Hardcoden der drei Benutzer.
    **Lösung:** Diese Benutzer wurden hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion.
 
 2. **Problem:** Es kann nur eine Datei gleichzeitig hochgeladen werden, außer beim Account von Julian.
-   **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen. Bei der Powercurve empfiehlt sich folgende Datei zum Testen: (Datei einfügen).
+   **Lösung:** Löschen Sie die vorherige Datei, bevor Sie eine neue hochladen. Bei der Powercurve empfiehlt sich folgende Datei zum Testen:uploads/julian.huber/activity.csv (findet man im Repository im Ordner "Uploads" -> "julian.huber")
 
 ## WRAP UP
 
