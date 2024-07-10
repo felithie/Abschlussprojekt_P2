@@ -49,7 +49,7 @@ Um die App auszutesten, können Sie eines dieser drei Profile benutzen:
 Oder Sie erstellen ein eigenes Konto unter **"Registrieren anmelden"**. 
 
 > [!IMPORTANT]
-> Diese drei Benutzer sind hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion. Um die Funktionen eines neuen Profils auszutesten, empfiehlt sich folgende Datei hochzuladen: .
+> Diese drei Benutzer sind hardgecodet, weil es bei der normalen Funktion immer eine Fehlermeldung gab. Mit dem Hardcoding wurde eine eigene Funktion implementiert, die nur verwendet wird, wenn eines dieser drei Benutzer genutzt wird. Falls ein neuer Benutzer erstellt wird, geht dies ganz normal über die normale Funktion. Um die Funktionen eines neuen Profils auszutesten, empfiehlt sich folgende Datei hochzuladen:uploads/ruhe_ecg_data.csv (findet man im Repository im Ordner "Uploads") .
 
 ### Über das Herz
 
