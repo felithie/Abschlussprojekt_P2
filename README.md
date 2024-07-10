@@ -39,7 +39,7 @@ Die Seite "About Us" bietet Informationen über das Team und die Mission von Car
 
 ### Anmeldung
 
-Auf der Anmeldungsseite können Sie sich entweder anmelden oder ein neues Benutzerkonto registrieren. Wenn Sie sich registrieren, können Sie ein Profil erstellen und nach der Anmeldung auf personalisierte Inhalte und Funktionen zugreifen. Sobald Sie angemeldet sind, haben Sie Zugriff auf Daten wie Ihren BMI, Ihre maximale Herzrate, Ihre generelle Herzfrequenz, Ihre Herzfrequenzvariabilität und weitere Gesundheitsdaten. Sie können auch aus einer eigenen CSV-Datei einen Plot erstellen lassen.
+Auf der Anmeldungsseite können Sie sich entweder anmelden oder ein neues Benutzerkonto registrieren. Wenn Sie sich registrieren, können Sie ein Profil erstellen und nach der Anmeldung auf personalisierte Inhalte und Funktionen zugreifen. Sobald Sie angemeldet sind, haben Sie Zugriff auf Daten wie Ihren BMI, Ihre maximale Herzrate, Ihre generelle Herzfrequenz, Ihre Herzfrequenzvariabilität und weitere Gesundheitsdaten. Sie können auch aus einer eigenen CSV-Datei einen Plot iherer persönlichen Powercurve erstellen lassen.
 
 ### Über das Herz
 
