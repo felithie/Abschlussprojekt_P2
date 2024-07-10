@@ -1,6 +1,6 @@
 import streamlit as st
 
-def maximalpuls_berechnen(alter, geschlecht):
+def maximalpuls_berechnen(alter, geschlecht): # Funktion zur Berechnung des Maximalpulses
     if geschlecht.lower() == 'männlich':
         return 220 - alter
     elif geschlecht.lower() == 'weiblich':
@@ -8,14 +8,14 @@ def maximalpuls_berechnen(alter, geschlecht):
     else:
         raise ValueError("Ungültiges Geschlecht. Bitte 'm' für männlich oder 'w' für weiblich eingeben.")
 
-# Streamlit Setup
-st.title("Trainingspuls- und Maximalpuls-Rechner")
+# Streamlit-App
+st.title("Trainingspuls- und Maximalpuls-Rechner") 
 st.write("""
     ### Bitte beachte, dass es sich hierbei um Durchschnittswerte handelt.
     Je nach Grundfitness, Tagesform, Veranlagung und externen Faktoren können deine tatsächlichen Pulswerte um +/- 10 Schläge/Minute abweichen.
 """)
 
-alter = st.number_input("Gib dein Alter ein:", min_value=1, max_value=120, value=30)
+alter = st.number_input("Gib dein Alter ein:", min_value=1, max_value=120, value=30) 
 geschlecht = st.selectbox("Wähle dein Geschlecht:", ["männlich", "weiblich"])
 ruhepuls = st.number_input("Gib deinen Ruhepuls ein:", min_value=30, max_value=150, value=60)
 
