@@ -61,6 +61,7 @@ def user_profile_page():
     # Store the user profile data in session state
     st.session_state['user_profile'] = {
         'name': firstname,
+        'lastname': lastname,
         'age': age,
         'gender': gender,
         'weight': weight,
