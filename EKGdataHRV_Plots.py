@@ -1,17 +1,15 @@
-import plotly.graph_objects as go
-import plotly.express as px
+import os
 import pandas as pd
 import numpy as np
 import scipy.signal as signal
 from datetime import datetime
 import streamlit as st
-
-from database import get_user_age, get_user_data, get_user_height, get_user_id, get_user_weight
+from versuch import display_in_streamlit  # Import der Funktion
 
 class EKGdataHRV:
     def __init__(self, df, person_info):
         self.df = df
-        self.type = person_info.get('type', 'Unbekannt')
+        self.type = "Ruhe" if "Ruhe" in person_info.get('type', '') else "Belastung" if "Belastung" in person_info.get('type', '') else "Unbekannt"
         self.df.columns = ['Time (s)', 'ECG Signal (mV)']  # Rename columns for consistency
         self.ecg_signal = self.df['ECG Signal (mV)'].values
         self.time = self.df['Time (s)'].values
@@ -48,12 +46,9 @@ class EKGdataHRV:
         current_year = datetime.now().year
         age = self.person_info.get('age', 0)
         gender = self.person_info.get('gender', 'unbekannt')
-        firstname = self.person_info.get('firstname', 'Unbekannt')
-        lastname = self.person_info.get('lastname', '')
+        firstname = self.person_info.get('name', 'Unbekannt')
 
-        full_name = f"{firstname} {lastname}".strip()
-
-        interpretation = f"Diese HRV-Daten beziehen sich auf {full_name}, "
+        interpretation = f"Diese HRV-Daten beziehen sich auf {firstname}, "
         interpretation += f"der/die {age} Jahre alt ist. "
         interpretation += f"Das Geschlecht der Person ist {gender}. "
 
@@ -86,62 +81,49 @@ class EKGdataHRV:
 
         return interpretation
 
-def plot_poincare(nn_intervals):
-    if len(nn_intervals) > 1:
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=nn_intervals[:-1], y=nn_intervals[1:], mode='markers', name='NN-Intervalle', marker=dict(color='blue', opacity=0.5)))
-        fig.add_trace(go.Scatter(x=[min(nn_intervals), max(nn_intervals)], y=[min(nn_intervals), max(nn_intervals)], mode='lines', name='Identitätslinie', line=dict(color='red', dash='dash')))
-        fig.update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)')
-        return fig
-    else:
-        return go.Figure().update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)', annotations=[dict(text='Nicht genug Daten für das Diagramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
-
-def plot_histogram(nn_intervals):
-    if len(nn_intervals) > 0:
-        fig = go.Figure()
-        fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=max(2, len(nn_intervals))))
-        fig.update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit')
-        return fig
-    else:
-        return go.Figure().update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit', annotations=[dict(text='Nicht genug Daten für das Histogramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
-
-def plot_weight_trend(weight_df):
-    fig = px.line(weight_df, x="Datum", y="Gewicht", title="Gewichtsverlauf")
-    return fig
-
 def display_hrv_analysis():
-    st.title("Herzfrequenzvariabilitätsanalyse (HRV)")
+    username = st.text_input("Geben Sie Ihren Benutzernamen ein", key="username_input")
+    if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
+        display_in_streamlit(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
+    else:
+        st.write("Geben Sie die Details für die HRV-Analyse ein")
+        # Platzhalter für weitere Eingaben des Nutzers
+        person_info = {
+            'name': username,
+            'age': st.number_input("Alter", min_value=0, max_value=120, value=30),
+            'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
+            'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
+        }
+        uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
+        if uploaded_file is not None:
+            df = pd.read_csv(uploaded_file)
+            st.write("Hochgeladene Datei:")
+            st.write(df.head())
+            
+            ekg_data = EKGdataHRV(df, person_info)
+            nn_intervals = ekg_data.find_nn_intervals()
+            hrv = EKGdataHRV.calculate_hrv(nn_intervals)
 
-    uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.write("Hochgeladene Datei:")
-        st.write(df.head())
+            st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** {hrv:.4f} s")
 
-        username = st.text_input("Benutzername")
-        if username:
-            person_info = {
-                'age': get_user_age(username),
-                'weight': get_user_weight(username),
-                'height': get_user_height(username),
-                'name': get_user_id(username),
-                'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
-                'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
+            poincare_fig = ekg_data.plot_poincare(nn_intervals)
+            histogram_fig = ekg_data.plot_histogram(nn_intervals)
+            interpretation = ekg_data.interpret_data()
 
-            }
+            st.write("""
+            ### Poincaré-Diagramm der NN-Intervalle
+            """)
+            st.plotly_chart(poincare_fig)
 
-            if st.button("Analyse starten"):
-                ekg_data = EKGdataHRV(df, person_info)
-                nn_intervals = ekg_data.find_nn_intervals()
-                hrv = EKGdataHRV.calculate_hrv(nn_intervals)
+            st.write("""
+            ### Histogramm der NN-Intervalle
+            """)
+            st.plotly_chart(histogram_fig)
 
-                st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** `{hrv:.4f} s`")
+            st.write("""
+            ### Interpretation der HRV-Daten
+            """)
+            st.write(interpretation)
 
-                poincare_fig = plot_poincare(nn_intervals)
-                histogram_fig = plot_histogram(nn_intervals)
-                interpretation = ekg_data.interpret_data()
-
-                st.plotly_chart(poincare_fig)
-                st.plotly_chart(histogram_fig)
-                st.write(interpretation)
-
+if __name__ == "__main__":
+    display_hrv_analysis()
