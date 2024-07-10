@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 import scipy.signal as signal
-from database import get_user_files, get_user_id, get_user
+from test import run_streamlit_app  # Import der Funktion
 
 class EKGdata:
 
@@ -94,70 +94,71 @@ class EKGdata:
         return fig
 
 def display_hr_analysis():
-    st.title("Herzfrequenzvariabilitätsanalyse (HRV)")
+    if 'username' not in st.session_state:
+        st.error("Sie müssen sich zuerst anmelden.")
+        return
 
-    uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv", key="file_uploader_1")
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.write("Hochgeladene Datei:")
-        st.write(df.head())
+    username = st.session_state['username']
+    st.text_input("Bestätigung des Benutzernamens", value=username, key="hr_username_input", disabled=True)
 
-        username = st.text_input("Benutzername", key="username_input")
-        if username:
-            person_info = get_user(username)
-            if person_info:
-                person_info = {
-                    'age': person_info[4],
-                    'weight': person_info[5],
-                    'height': person_info[6],
-                    'name': person_info[3],
-                    'file_type': uploaded_file.name,
-                    'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"], key="gender_selectbox"),
-                    'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"], key="type_selectbox")
-                }
+    if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
+        run_streamlit_app(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
+    else:
+        st.write("Geben Sie die Details für die Herzratenanalyse ein")
+        # Platzhalter für weitere Eingaben des Nutzers
+        person_info = {
+            'name': username,
+            'age': st.number_input("Alter", min_value=0, max_value=120, value=30, key="hr_age_input"),
+            'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"], key="hr_gender_selectbox"),
+            'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"], key="hr_type_selectbox")
+        }
+        uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv", key="hr_file_uploader")
+        if uploaded_file is not None:
+            df = pd.read_csv(uploaded_file)
+            st.write("Hochgeladene Datei:")
+            st.write(df.head())
+            
+            ekg_data = EKGdata(df, person_info)
+            df = ekg_data.df
+            peaks = EKGdata.find_peaks(df["ECG Signal (mV)"], 0.5, 200)
+            heart_rate_times, heart_rate_at_peaks = EKGdata.estimate_hr(peaks, df["Time in s"])
 
-                if st.button("Analyse starten", key="analyze_button"):
-                    ekg_data = EKGdata(df, person_info)
-                    df = ekg_data.df
-                    peaks = EKGdata.find_peaks(df["ECG Signal (mV)"], 0.5, 200)
-                    heart_rate_times, heart_rate_at_peaks = EKGdata.estimate_hr(peaks, df["Time in s"])
+            min_time = df["Time in s"].min()
+            max_time = df["Time in s"].max()
 
-                    min_time = df["Time in s"].min()
-                    max_time = df["Time in s"].max()
+            st.subheader("EKG und Herzfrequenzanalyse")
+            st.write(f"Patient: {person_info['name']} ({ekg_data.type} EKG)")
 
-                    st.subheader("EKG und Herzfrequenzanalyse")
-                    st.write(f"Patient: {person_info['name']} ({ekg_data.type} EKG)")
+            st.write("Wählen Sie den Zeitbereich für den EKG-Plot aus:")
+            start_time_ekg, end_time_ekg = st.slider(
+                "Zeitbereich für EKG-Plot:",
+                min_value=float(min_time),
+                max_value=float(max_time),
+                value=(float(min_time), float(max_time)),
+                step=0.1,
+                key="hr_ekg_slider"
+            )
 
-                    st.write("Wählen Sie den Zeitbereich für den EKG-Plot aus:")
-                    start_time_ekg, end_time_ekg = st.slider(
-                        "Zeitbereich für EKG-Plot:",
-                        min_value=float(min_time),
-                        max_value=float(max_time),
-                        value=(float(min_time), float(max_time)),
-                        step=0.1,
-                        key="ekg_slider"
-                    )
+            ekg_fig = EKGdata.make_ekg_plot(peaks, df, start_time_ekg, end_time_ekg)
+            st.plotly_chart(ekg_fig)
 
-                    ekg_fig = EKGdata.make_ekg_plot(peaks, df, start_time_ekg, end_time_ekg)
-                    st.plotly_chart(ekg_fig)
+            st.subheader("Wählen Sie den Zeitbereich für den Herzfrequenz-Plot aus:")
+            start_time_hr, end_time_hr = st.slider(
+                "Zeitbereich für Herzfrequenz-Plot:",
+                min_value=float(min_time),
+                max_value=float(max_time),
+                value=(float(min_time), float(max_time)),
+                step=0.1,
+                key="hr_hr_slider"
+            )
 
-                    st.subheader("Wählen Sie den Zeitbereich für den Herzfrequenz-Plot aus:")
-                    start_time_hr, end_time_hr = st.slider(
-                        "Zeitbereich für Herzfrequenz-Plot:",
-                        min_value=float(min_time),
-                        max_value=float(max_time),
-                        value=(float(min_time), float(max_time)),
-                        step=0.1,
-                        key="hr_slider"
-                    )
+            heart_rate_fig = EKGdata.make_hf_plot(heart_rate_times, heart_rate_at_peaks, start_time_hr, end_time_hr)
+            st.plotly_chart(heart_rate_fig)
 
-                    heart_rate_fig = EKGdata.make_hf_plot(heart_rate_times, heart_rate_at_peaks, start_time_hr, end_time_hr)
-                    st.plotly_chart(heart_rate_fig)
-
-                    st.subheader("Wählen Sie die Fenstergröße für den gleitenden Durchschnitt:")
-                    window_size = st.slider("Fenstergröße:", min_value=1, max_value=50, value=10, step=1, key="window_slider")
-                    smoothed_heart_rate_fig = EKGdata.plot_moving_average_heart_rate(heart_rate_at_peaks, heart_rate_times, window_size, start_time_hr, end_time_hr)
-                    st.plotly_chart(smoothed_heart_rate_fig)
+            st.subheader("Wählen Sie die Fenstergröße für den gleitenden Durchschnitt:")
+            window_size = st.slider("Fenstergröße:", min_value=1, max_value=50, value=10, step=1, key="hr_window_slider")
+            smoothed_heart_rate_fig = EKGdata.plot_moving_average_heart_rate(heart_rate_at_peaks, heart_rate_times, window_size, start_time_hr, end_time_hr)
+            st.plotly_chart(smoothed_heart_rate_fig)
 
 if __name__ == "__main__":
     display_hr_analysis()
