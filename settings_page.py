@@ -58,28 +58,6 @@ def user_profile_page():
         st.subheader("Aktuelles Profilbild")
         st.image(profile_image, width=150)
 
-    st.subheader("EKG Dateien hochladen")
-    uploaded_file = st.file_uploader("Wählen Sie eine Datei", type=["csv"], key="ekg_uploader")
-    if uploaded_file is not None:
-        user_id = get_user_id(st.session_state['username'])
-        if user_id is not None:
-            uploads_dir = "uploads"
-            if not os.path.exists(uploads_dir):
-                os.makedirs(uploads_dir)
-
-            file_path = os.path.join(uploads_dir, uploaded_file.name)
-            with open(file_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-            add_user_file(user_id, file_path)
-            st.success(f"Datei {uploaded_file.name} hochgeladen und gespeichert!")
-
-    st.subheader("Hochgeladene Dateien")
-    user_id = get_user_id(st.session_state['username'])
-    if user_id is not None:
-        files = get_user_files(user_id)
-        for file in files:
-            st.write(file)
-
     # Store the user profile data in session state
     st.session_state['user_profile'] = {
         'name': firstname,

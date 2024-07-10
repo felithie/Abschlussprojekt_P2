@@ -134,7 +134,6 @@ def display_hr_analysis():
             max_time = df["Time in s"].max()
 
             st.subheader("EKG und Herzfrequenzanalyse")
-            st.write(f"Patient: {person_info['name']} ({ekg_data.type} EKG)")
 
             st.write("Wählen Sie den Zeitbereich für den EKG-Plot aus:")
             start_time_ekg, end_time_ekg = st.slider(
