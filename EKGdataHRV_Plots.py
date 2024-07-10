@@ -82,7 +82,13 @@ class EKGdataHRV:
         return interpretation
 
 def display_hrv_analysis():
-    username = st.text_input("Geben Sie Ihren Benutzernamen ein", key="username_input")
+    if 'username' not in st.session_state:
+        st.error("Sie müssen sich zuerst anmelden.")
+        return
+
+    username = st.session_state['username']
+    st.text_input("Bestätigung des Benutzernamens", value=username, key="username_input", disabled=True)
+
     if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
         display_in_streamlit(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
     else:
