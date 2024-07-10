@@ -2,7 +2,12 @@
 ---
 
 Willkommen bei **Cardio Check**! Diese Anwendung wurde entwickelt, um Benutzern zu helfen, ihre Herzgesundheit zu überwachen und mehr über verschiedene Herzthemen zu erfahren. Cardio Check bietet eine Vielzahl von Tools und Informationen, die es Ihnen ermöglichen, EKG-Daten zu analysieren, Ihre Herzfrequenz zu überwachen, informative Artikel zu lesen und vieles mehr.
+
+
+
 **App Link:** https://cardiochecksfr.streamlit.app/
+
+
 ## Installation
 
 Um Cardio Check auf Ihrem lokalen System zu installieren, führen Sie bitte die folgenden Schritte aus:
@@ -93,7 +98,8 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 ### Freie Aufgaben
 
 - [x] Neue Daten mit einem Nutzer verknüpfen
-- [x] Nutzerdaten editierbar machen 
+- [x] Nutzerdaten editierbar machen
+- [x] Benutzerspezifische Login-Funktion
 - [x] Daten in einer SQLite oder tinyDB speichern 
 - [x] Herzrate im sinnvollen gleitenden Durchschnitt als Plot anzeigen
 - [x] Herzratenvariabilität anzeigen 
@@ -101,6 +107,8 @@ Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwickler
 - [x] Interpretation der Herzraten mit Meldungen
 - [x] BMI Rechner
 - [x] Powercurve
+- [x] About us
+- [x] Übers Herz
 
 ---
 
