@@ -93,13 +93,17 @@ def display_hrv_analysis():
         display_in_streamlit(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
     else:
         st.write("Geben Sie die Details für die HRV-Analyse ein")
-        # Platzhalter für weitere Eingaben des Nutzers
+        # Retrieve user profile from session state
+        user_profile = st.session_state.get('user_profile', {})
+        gender = user_profile.get('gender', 'unbekannt')
+
         person_info = {
             'name': username,
-            'age': st.number_input("Alter", min_value=0, max_value=120, value=30),
-            'gender': st.selectbox("Geschlecht", options=["männlich", "weiblich", "divers"]),
+            'age': st.number_input("Alter", min_value=0, max_value=120, value=user_profile.get('age', 30)),
+            'gender': gender,
             'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
         }
+
         uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
         if uploaded_file is not None:
             df = pd.read_csv(uploaded_file)
@@ -112,6 +116,7 @@ def display_hrv_analysis():
 
             st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** {hrv:.4f} s")
 
+            # Assuming the methods plot_poincare and plot_histogram exist
             poincare_fig = ekg_data.plot_poincare(nn_intervals)
             histogram_fig = ekg_data.plot_histogram(nn_intervals)
             interpretation = ekg_data.interpret_data()

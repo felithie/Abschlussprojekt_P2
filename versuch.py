@@ -119,6 +119,11 @@ def display_in_streamlit(username):
     selected_person = EKGdataHRV.load_by_username(person_data, username)
 
     if selected_person:
+        # Extract gender from session state if available
+        user_profile = st.session_state.get('user_profile', {})
+        gender = user_profile.get('gender', 'unbekannt')
+        selected_person['gender'] = gender
+
         ekg_options = {f"EKG ID {ekg['id']} - {ekg['date']}": ekg for ekg in selected_person['ekg_tests']}
         selected_ekg = st.selectbox("Wählen Sie ein EKG aus:", list(ekg_options.keys()), key="ekg_select")
         selected_ekg_data = ekg_options[selected_ekg]

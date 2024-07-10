@@ -3,6 +3,7 @@ import streamlit as st
 from datetime import datetime
 from database import get_user_data, update_user, get_user_id, add_user_file, get_user_files
 from database import init_db
+
 init_db()
 
 def user_profile_page():
@@ -78,6 +79,15 @@ def user_profile_page():
         files = get_user_files(user_id)
         for file in files:
             st.write(file)
+
+    # Store the user profile data in session state
+    st.session_state['user_profile'] = {
+        'name': firstname,
+        'age': age,
+        'gender': gender,
+        'weight': weight,
+        'height': height
+    }
 
 # Aufruf der Benutzerprofilseite
 if __name__ == "__main__":
