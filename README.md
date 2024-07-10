@@ -59,5 +59,4 @@ Auf dieser Seite können Sie Ihren Maximalpuls und Ihre individuellen Belastungs
 Das Impressum enthält rechtliche Informationen zur Anwendung und den Entwicklern. Hier finden Sie Angaben zum Datenschutz und zu den Urhebern der Anwendung.
 
 ---
-
-Mit dieser Anleitung sollten Sie in der Lage sein, die Funktionen von Cardio Check zu verstehen und die verschiedenen Seiten der Anwendung effektiv zu nutzen. Viel Spaß beim Erkunden und Überwachen Ihrer Herzgesundheit mit Cardio Check!
+Viel Spaß beim Erkunden und Überwachen Ihrer Herzgesundheit mit Cardio Check!
