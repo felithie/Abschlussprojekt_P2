@@ -1,7 +1,7 @@
 # about_us.py
 import streamlit as st
 
-def about_us():
+def about_us(): # Funktion, die die About Us Seite erstellt
     st.title("About Us")
     st.write("""
     Wir sind drei engagierte Studentinnen des Studiengangs Medizin und Sporttechnologie am Management Center Innsbruck (MCI). Unser Team besteht aus:
@@ -12,10 +12,10 @@ def about_us():
     
     Im Rahmen unseres Programmierübungsunterrichts haben wir diese Website selbst gecodet und gestaltet. Unsere Motivation hinter diesem Projekt war es, unsere Fähigkeiten im Bereich der Programmierung zu verbessern und eine praktische Anwendung zu schaffen, die sowohl unsere technischen Fertigkeiten als auch unser Interesse an Medizin und Sporttechnologie widerspiegelt.""")
     
-    # Create columns
+    # macht 3 Spalten
     col1, col2, col3 = st.columns(3)
     
-    # Add images to columns
+    # fügt Bilder hinzu
     with col1:
         st.image('images/Bild.Svenja.jpg', caption='Svenja Taft', width=150)
     with col2:

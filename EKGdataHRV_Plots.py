@@ -4,68 +4,139 @@ import numpy as np
 import scipy.signal as signal
 from datetime import datetime
 import streamlit as st
-from HRV_specific import display_in_streamlit  # Import der Funktion
+from HRV_specific import display_in_streamlit 
 import plotly.graph_objects as go
 
 class EKGdataHRV:
+    """
+    Eine Klasse zur Analyse von EKG-Daten und zur Berechnung der Herzfrequenzvariabilität (HRV).
+    Enthält Methoden zur Identifizierung von R-Peaks, Berechnung von NN-Intervallen und HRV, sowie zur Visualisierung der Daten.
+    """
     def __init__(self, df, person_info):
+        """
+        Initialisiert die EKGdataHRV-Klasse.
+
+        Attributes:
+        df (pd.DataFrame): Das DataFrame, das die EKG-Daten enthält.
+        type (str): Der Typ des EKG (Ruhe oder Belastung).
+        ecg_signal (np.array): Das EKG-Signal.
+        time (np.array): Die Zeitstempel des EKG-Signals.
+        person_info (dict): Informationen über die Person, zu der die EKG-Daten gehören.
+        r_peaks (np.array): Die erkannten R-Peaks im EKG-Signal.
+        """
         self.df = df
         self.type = "Ruhe" if "Ruhe" in person_info.get('type', '') else "Belastung" if "Belastung" in person_info.get('type', '') else "Unbekannt"
-        self.df.columns = ['Time (s)', 'ECG Signal (mV)']  # Rename columns for consistency
+        self.df.columns = ['Time (s)', 'ECG Signal (mV)']  # Spalten für Konsistenz umbenennen
         self.ecg_signal = self.df['ECG Signal (mV)'].values
         self.time = self.df['Time (s)'].values
-        self.person_info = person_info
-        self.r_peaks = self.find_r_peaks()  # Ensure r_peaks is always initialized
+        self.person_info = person_info #
+        self.r_peaks = self.find_r_peaks()  # Sicherstellen, dass r_peaks immer initialisiert werden
 
     @staticmethod
     def find_peaks(series, threshold, distance):
+        """
+        Findet Peaks in einer Zeitreihe.
+
+        Parameters:
+        series (np.array): Die Zeitreihe, in der Peaks gefunden werden sollen.
+        threshold (float): Der Schwellenwert für die Höhe der Peaks.
+        distance (int): Der minimale Abstand zwischen den Peaks.
+
+        Returns:
+        np.array: Die Indizes der gefundenen Peaks.
+        """
         if len(series) == 0:
             return np.array([]), {}
-        peaks, properties = signal.find_peaks(series, height=threshold, distance=distance)
-        return peaks, properties
+        peaks, properties = signal.find_peaks(series, height=threshold, distance=distance) #
+        return peaks, properties 
 
     def find_r_peaks(self):
-        r_peaks, _ = EKGdataHRV.find_peaks(self.ecg_signal, 0.5, 200)  # Adjust threshold and distance
+        """
+        Findet R-Peaks im EKG-Signal.
+
+        Returns:
+        np.array: Die Indizes der gefundenen R-Peaks.
+        """
+        r_peaks, _ = EKGdataHRV.find_peaks(self.ecg_signal, 0.5, 200)  # Schwellenwert und Abstand anpassen
         return r_peaks
 
     def find_nn_intervals(self):
-        if len(self.time) == 0 or len(self.r_peaks) == 0:
+        """
+        Berechnet die NN-Intervalle aus den gefundenen R-Peaks.
+
+        Returns:
+        np.array: Die berechneten NN-Intervalle.
+        """
+        if len(self.time) == 0 or len(self.r_peaks) == 0: # Wenn keine Zeit oder keine R-Peaks vorhanden sind,
             return np.array([])
-        time = self.df['Time (s)'].values
-        nn_intervals = np.diff(time[self.r_peaks])
-        nn_intervals = nn_intervals[(nn_intervals > 0.3) & (nn_intervals < 2)]
+        time = self.df['Time (s)'].values 
+        nn_intervals = np.diff(time[self.r_peaks]) 
+        nn_intervals = nn_intervals[(nn_intervals > 0.3) & (nn_intervals < 2)] # Filtern von unrealistischen Werten
         return nn_intervals
 
     @staticmethod
     def calculate_hrv(nn_intervals):
-        if len(nn_intervals) == 0:
+        """
+        Berechnet die Herzfrequenzvariabilität (HRV) aus den NN-Intervallen.
+
+        Parameters:
+        nn_intervals (np.array): Die NN-Intervalle.
+
+        Returns:
+        float: Die berechnete HRV (SDNN).
+        """
+        if len(nn_intervals) == 0: # Wenn keine NN-Intervalle vorhanden sind,
             return 0
-        sdnn = np.std(nn_intervals, ddof=1)
+        sdnn = np.std(nn_intervals, ddof=1) 
         return sdnn
 
     def plot_poincare(self, nn_intervals):
-        if len(nn_intervals) > 1:
+        """
+        Erstellt ein Poincaré-Diagramm der NN-Intervalle.
+
+        Parameters:
+        nn_intervals (np.array): Die NN-Intervalle.
+
+        Returns:
+        go.Figure: Das Poincaré-Diagramm.
+        """
+        if len(nn_intervals) > 1: # Wenn genügend Daten vorhanden sind,
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=nn_intervals[:-1], y=nn_intervals[1:], mode='markers', name='NN-Intervalle', marker=dict(color='blue', opacity=0.5)))
             fig.add_trace(go.Scatter(x=[min(nn_intervals), max(nn_intervals)], y=[min(nn_intervals), max(nn_intervals)], mode='lines', name='Identitätslinie', line=dict(color='red', dash='dash')))
             fig.update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)')
             return fig
-        else:
+        else: # Wenn nicht genügend Daten vorhanden sind,
             return go.Figure().update_layout(title='Poincaré-Diagramm der NN-Intervalle', xaxis_title='NN_i (s)', yaxis_title='NN_(i+1) (s)', annotations=[dict(text='Nicht genug Daten für das Diagramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
 
     def plot_histogram(self, nn_intervals):
-        if len(nn_intervals) > 0:
+        """
+        Erstellt ein Histogramm der NN-Intervalle.
+
+        Parameters:
+        nn_intervals (np.array): Die NN-Intervalle.
+
+        Returns:
+        go.Figure: Das Histogramm.
+        """
+        if len(nn_intervals) > 0: # Wenn genügend Daten vorhanden sind,
             fig = go.Figure()
             fig.add_trace(go.Histogram(x=nn_intervals, nbinsx=50))
             fig.update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit')
             return fig
-        else:
+        else: # Wenn nicht genügend Daten vorhanden sind,
             return go.Figure().update_layout(title='Histogramm der NN-Intervalle', xaxis_title='NN-Intervall (s)', yaxis_title='Häufigkeit', annotations=[dict(text='Nicht genug Daten für das Histogramm', x=0.5, y=0.5, showarrow=False, font=dict(size=20))])
 
     def interpret_data(self):
-        current_year = datetime.now().year
-        age = self.person_info.get('age', 0)
-        gender = self.person_info.get('gender', 'unbekannt')
+        """
+        Interpretiert die HRV-Daten basierend auf dem Alter und dem Geschlecht der Person.
+
+        Returns:
+        str: Die Interpretation der HRV-Daten.
+        """
+        current_year = datetime.now().year 
+        age = self.person_info.get('age', 0) 
+        gender = self.person_info.get('gender', 'unbekannt') 
         firstname = self.person_info.get('name', 'Unbekannt')
 
         interpretation = f"Diese HRV-Daten beziehen sich auf {firstname}, "
@@ -102,23 +173,26 @@ class EKGdataHRV:
         return interpretation
 
 def display_hrv_analysis():
+    """
+    Zeigt die HRV-Analyse in der Streamlit-App an.
+    """
     st.subheader("Herzratenvariationsanalyse")
-    if 'username' not in st.session_state:
+    if 'username' not in st.session_state: # Wenn der Benutzer nicht angemeldet ist,
         st.error("Sie müssen sich zuerst anmelden.")
         return
 
-    username = st.session_state['username']
+    username = st.session_state['username'] 
     st.text_input("Bestätigung des Benutzernamens", value=username, key="username_input", disabled=True)
 
     if username in ["julian.huber", "yannic.heyer", "yunus.schmirander"]:
         display_in_streamlit(username)  # Aufruf der importierten Funktion mit dem Benutzernamen
     else:
-        # Retrieve user profile from session state
+        # Holt das Benutzerprofil aus dem Session State
         user_profile = st.session_state.get('user_profile', {})
         age = user_profile.get('age', 30)
         gender = user_profile.get('gender', 'unbekannt')
 
-        st.write(f"Alter: {age} Jahre")
+        st.write(f"Alter: {age} Jahre") 
         st.write(f"Geschlecht: {gender}")
 
         person_info = {
@@ -128,7 +202,7 @@ def display_hrv_analysis():
             'type': st.selectbox("Typ des EKGs", options=["Ruhe", "Belastung"])
         }
         uploaded_file = st.file_uploader("Laden Sie Ihre EKG-Daten hoch", type="csv")
-        if uploaded_file is not None:
+        if uploaded_file is not None: 
             df = pd.read_csv(uploaded_file)
             st.write("Hochgeladene Datei:")
             st.write(df.head())
@@ -139,7 +213,7 @@ def display_hrv_analysis():
 
             st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** {hrv:.4f} s")
             
-            poincare_fig = ekg_data.plot_poincare(nn_intervals)
+            poincare_fig = ekg_data.plot_poincare(nn_intervals) 
             histogram_fig = ekg_data.plot_histogram(nn_intervals)
             interpretation = ekg_data.interpret_data()
 
