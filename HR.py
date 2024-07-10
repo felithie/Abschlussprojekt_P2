@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 import scipy.signal as signal
-from test import run_streamlit_app  # Import der Funktion
+from HR_specific import run_streamlit_app  # Import der Funktion
 
 class EKGdata:
 

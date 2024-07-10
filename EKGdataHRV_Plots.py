@@ -4,7 +4,7 @@ import numpy as np
 import scipy.signal as signal
 from datetime import datetime
 import streamlit as st
-from versuch import display_in_streamlit  # Import der Funktion
+from HRV_specific import display_in_streamlit  # Import der Funktion
 import plotly.graph_objects as go
 
 class EKGdataHRV:
