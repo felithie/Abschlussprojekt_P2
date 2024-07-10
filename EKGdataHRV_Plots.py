@@ -102,6 +102,7 @@ class EKGdataHRV:
         return interpretation
 
 def display_hrv_analysis():
+    st.subheader("Herzratenvariationsanalyse")
     if 'username' not in st.session_state:
         st.error("Sie müssen sich zuerst anmelden.")
         return
@@ -137,20 +138,26 @@ def display_hrv_analysis():
             hrv = EKGdataHRV.calculate_hrv(nn_intervals)
 
             st.write(f"**Herzfrequenzvariabilität (SDNN) in Sekunden:** {hrv:.4f} s")
-
+            
             poincare_fig = ekg_data.plot_poincare(nn_intervals)
             histogram_fig = ekg_data.plot_histogram(nn_intervals)
             interpretation = ekg_data.interpret_data()
 
-            st.write("""
-            ### Poincaré-Diagramm der NN-Intervalle
-            """)
             st.plotly_chart(poincare_fig)
-
             st.write("""
-            ### Histogramm der NN-Intervalle
+            Das **Poincaré-Diagramm** ist eine grafische Darstellung der Herzfrequenzvariabilität (HRV), bei der die zeitlichen Abstände zwischen aufeinanderfolgenden Herzschlägen (NN-Intervalle) aufgetragen werden. Im Poincaré-Diagramm wird das NN-Intervall \(NN_i\) auf der x-Achse und das folgende Intervall \(NN_{i+1}\) auf der y-Achse dargestellt. Dies ermöglicht die Visualisierung der Dynamik und Variabilität der Herzfrequenz über die Zeit.
+
+            - **Form und Verteilung**: Die Form und Verteilung der Punkte im Diagramm geben Aufschluss über die HRV. Eine dichte Punktwolke um die Identitätslinie (diagonale Linie) deutet auf eine geringe Variabilität hin, während eine breitere Streuung auf eine höhere Variabilität hinweist.
+            - **Anwendungsgebiete**: Poincaré-Diagramme werden in der kardiologischen Forschung und in klinischen Anwendungen verwendet, um Herzrhythmusstörungen zu erkennen und die allgemeine Gesundheit des Herz-Kreislauf-Systems zu beurteilen.
             """)
             st.plotly_chart(histogram_fig)
+            st.write("""
+            Ein **Histogramm** ist eine grafische Darstellung der Verteilung eines Datensatzes. In Bezug auf die HRV zeigt ein Histogramm die Häufigkeit der verschiedenen NN-Intervalle (zeitliche Abstände zwischen Herzschlägen) in einem bestimmten Zeitraum.
+
+            - **Achsen**: Auf der x-Achse werden die NN-Intervalle aufgetragen, und auf der y-Achse wird die Häufigkeit dieser Intervalle angezeigt.
+            - **Interpretation**: Ein Histogramm kann helfen, die Verteilung und Häufigkeit bestimmter NN-Intervalle zu verstehen. Ein breites Histogramm mit einer flachen Verteilung deutet auf eine hohe Variabilität der Herzfrequenz hin, während ein schmales Histogramm mit einem ausgeprägten Peak auf eine geringe Variabilität hinweist.
+            - **Anwendungsgebiete**: Histogramme werden verwendet, um die allgemeine Variabilität der Herzfrequenz zu beurteilen und Anomalien oder Muster in der HRV zu identifizieren.
+            """)
 
             st.write("""
             ### Interpretation der HRV-Daten
